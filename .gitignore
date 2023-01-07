@@ -1,0 +1,13 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+.idea/*
+LeadersOfDigital/LeadersOfDigital.Android/Resources/Resource.designer.cs
+
+# Mobile.BuildTools
+secrets.json
+/Artifacts/*
+/.vs
+
