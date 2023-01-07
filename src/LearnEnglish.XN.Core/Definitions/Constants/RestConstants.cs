@@ -7,6 +7,4 @@ public static class RestConstants
     public const string LANG = "en";
 
     public const int WORDS_COUNT = 4;
-
-    public const string API_KEY = "";
 }

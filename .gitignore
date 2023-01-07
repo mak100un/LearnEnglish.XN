@@ -11,3 +11,4 @@ secrets.json
 /Artifacts/*
 /.vs
 
+/src/LearnEnglish.XN.Core/Definitions/Constants/Secrets.cs

@@ -16,7 +16,7 @@ namespace LearnEnglish.XN.Core.Services
 
         public Task<TranslateResponse> TranslateAsync(string word, CancellationToken cancellationToken = default) =>
             SendAsync<TranslateResponse>(
-                new HttpRequestMessage(HttpMethod.Post, $@"https://translate.yandex.net/api/v1.5/tr.json/translate?key={RestConstants.API_KEY}&text={word}&lang={RestConstants.TRANSLATE_DIRECTION}"),
+                new HttpRequestMessage(HttpMethod.Post, $@"https://translate.yandex.net/api/v1.5/tr.json/translate?key={Secrets.API_KEY}&text={word}&lang={RestConstants.TRANSLATE_DIRECTION}"),
                 cancellationToken);
     }
 }
