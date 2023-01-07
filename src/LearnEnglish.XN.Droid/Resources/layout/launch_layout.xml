@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+	
+	<ImageView
+			android:layout_width="0dp"
+			android:layout_height="0dp"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			android:scaleType="centerCrop"
+			android:src="@drawable/background_img" />
+	
+	<TextView
+			android:id="@+id/user_name"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			android:textColor="@android:color/white"
+			app:layout_constraintBottom_toTopOf="@id/happy_new_year_gif"
+			android:gravity="end|center_vertical"
+			android:layout_margin="6dp"
+			app:MvxBind="Text UserName"/>
+
+    <ffimageloading.cross.MvxCachedImageView
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="150dp"
+        android:id="@+id/happy_new_year_gif"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:maxWidth="200dp"
+        android:maxHeight="200dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        android:scaleType="fitCenter"
+        app:MvxBind="ImagePath 'res:cola.gif'" />
+	
+	<LinearLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/happy_new_year_gif"
+			android:layout_marginBottom="40dp"
+			android:layout_marginHorizontal="16dp">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:clickable="true"
+            android:background="@drawable/launch_action_button_style"
+            android:text="Задать имя"
+            app:MvxBind="Click ActionCommand, CommandParameter='UserName'"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp"
+            android:clickable="true"
+            android:background="@drawable/launch_action_button_style"
+            android:text="Чат"
+            app:MvxBind="Click ActionCommand, CommandParameter='Chat'"/>
+        
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
