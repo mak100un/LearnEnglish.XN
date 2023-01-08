@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.Services.Interfaces;
 using MvvmCross.IoC;
 using MvvmCross.Navigation;
@@ -41,9 +42,6 @@ public class NavigationService : MvxNavigationService, INavigationService
     protected override void OnDidClose(object sender, IMvxNavigateEventArgs e)
     {
         base.OnDidClose(sender, e);
-        if (NavigationStack.Contains(e.ViewModel))
-        {
-            NavigationStack.Remove(e.ViewModel);
-        }
+        NavigationStack.TryRemove(e.ViewModel);
     }
 }

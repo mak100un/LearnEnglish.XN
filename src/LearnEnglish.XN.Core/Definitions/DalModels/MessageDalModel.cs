@@ -13,4 +13,6 @@ public class MessageDalModel
     public bool IsMine { get; set; }
 
     public string Variants { get; set; }
+
+    public string MessageType { get; set; }
 }

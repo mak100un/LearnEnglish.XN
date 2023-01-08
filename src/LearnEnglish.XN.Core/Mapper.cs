@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using LearnEnglish.XN.Core.Definitions.DalModels;
+using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.ViewModels.Items;
 using Newtonsoft.Json;
@@ -20,10 +21,11 @@ public static class Mapper
 
         cfg.CreateMap<MessageDalModel, MessageViewModel>()
             .ForMember(d => d.Variants, s => s.MapFrom((m, _) => m.Variants?.Then<string, IEnumerable<VariantViewModel>>(JsonConvert.DeserializeObject<IEnumerable<VariantViewModel>>)))
+            .ForMember(d => d.SelectVariantCommand, s => s.Ignore())
             .ValidateMemberList(MemberList.Destination);
 
         cfg.CreateMap<VariantViewModel, MessageViewModel>()
-            .ForMember(d => d.IsMine, s => s.MapFrom(m => true))
+            .ForMember(d => d.MessageType, s => s.MapFrom(m => MessageTypes.Mine))
             .ForMember(d => d.Variants, s => s.Ignore())
             .ValidateMemberList(MemberList.Destination);
     });

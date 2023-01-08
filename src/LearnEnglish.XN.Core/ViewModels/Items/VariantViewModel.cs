@@ -16,7 +16,4 @@ public class VariantViewModel : MvxNotifyPropertyChanged
     public bool IsCorrect { get; set; }
 
     public string CorrectText { get; set; }
-
-    [JsonIgnore]
-    public ICommand SelectCommand { get; set; }
 }

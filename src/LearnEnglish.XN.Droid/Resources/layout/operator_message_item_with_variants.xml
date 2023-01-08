@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:background="@drawable/operator_message_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:id="@+id/operator_message_with_variants_textview"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="100dp" />
+
+    <learnenglish.xn.droid.widgets.VariantsLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="8dp"
+        app:flexWrap="wrap"
+        app:alignItems="stretch"
+        app:alignContent="stretch"
+        android:id="@+id/variantslayout"/>
+
+</LinearLayout>

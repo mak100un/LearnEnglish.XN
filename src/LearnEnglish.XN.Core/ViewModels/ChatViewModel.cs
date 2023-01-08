@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using AutoMapper;
 using LearnEnglish.XN.Core.Definitions.DalModels;
 using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.Definitions.Exceptions;
+using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.Repositories.Interfaces;
 using LearnEnglish.XN.Core.Services.Interfaces;
 using LearnEnglish.XN.Core.ViewModels.Items;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using MvvmCross.Commands;
 using Swordfish.NET.Collections;
 using Swordfish.NET.Collections.Auxiliary;
+using Xamarin.Essentials;
 
 namespace LearnEnglish.XN.Core.ViewModels;
 
@@ -43,7 +46,8 @@ public class ChatViewModel : BaseViewModel
                         {
                             await AddMessageAsync(new MessageViewModel
                             {
-                                Text = "Поздравляем! Вы правильно ответили на вопрос!"
+                                Text = "Поздравляем! Вы правильно ответили на вопрос!",
+                                MessageType = MessageTypes.Operator,
                             });
                             await DialogService.DisplaySuccessMessageAsync();
                         }
@@ -51,7 +55,8 @@ public class ChatViewModel : BaseViewModel
                         {
                             await AddMessageAsync(new MessageViewModel
                             {
-                                Text = $"Увы! Но правильный ответ: \"{variant.CorrectText}\""
+                                Text = $"Увы! Но правильный ответ: \"{variant.CorrectText}\"",
+                                MessageType = MessageTypes.Operator,
                             });
                         }
 
@@ -69,7 +74,10 @@ public class ChatViewModel : BaseViewModel
                     var newVariants = await randomizerService.GetRandomWordsAsync();
                     var translations = new ConcurrentObservableDictionary<string, string>();
 
-                    await Task.WhenAll(newVariants.Select(v => Task.Run(async () =>
+                    newVariants?.ForEach(newVariant =>
+                        translations.Add(new KeyValuePair<string, string>(newVariant, newVariant)));
+
+                    /*await Task.WhenAll(newVariants.Select(v => Task.Run(async () =>
                     {
                         var translation = await translateService.TranslateAsync(v);
 
@@ -102,7 +110,7 @@ public class ChatViewModel : BaseViewModel
                         }
 
                         translations.Add(v, text);
-                    })).ToArray());
+                    })).ToArray());*/
 
                     if (translations.Count <= 1)
                     {
@@ -114,10 +122,11 @@ public class ChatViewModel : BaseViewModel
                     await AddMessageAsync(new MessageViewModel
                     {
                         Text = $"Выберете правильный перевод слова \"{correctVariant}\"",
+                        SelectVariantCommand = _selectVariantCommand,
+                        MessageType = MessageTypes.OperatorWithVariants,
                         Variants = translations?.OrderBy(t => t.Key)
                             .Select(t => new VariantViewModel
                             {
-                                SelectCommand = _selectVariantCommand,
                                 IsCorrect = correctVariant.Key == t.Key,
                                 VariantType = VariantTypes.Answer,
                                 Text = t.Value,
@@ -134,32 +143,46 @@ public class ChatViewModel : BaseViewModel
                 DialogService.ShowToast(ex is LogicException lEx ? lEx.Message : "Произошла неизвестная ошибка");
                 await AddContinueMessageAsync();
                 IsLoading = false;
-            }).Task, variant => Messages?.LastOrDefault()?.Variants?.Contains(variant) == true);
+            }).TaskCompleted, variant => Messages?.LastOrDefault()?.Variants?.Contains(variant) == true);
 
-        LoadMoreCommand = new MvxAsyncCommand(() => CreateMvxNotifyTask(async () =>
-            {
-                IsLoadingMore = true;
-
-                var newItems = (await _messagesRepository.GetItemsAsync(Messages.Count, PAGE_SIZE))?.ToArray();
-                IsLoadMoreEnabled = newItems?.Length >= PAGE_SIZE;
-
-                if (newItems?.Length > 0)
+        LoadMoreCommand = new MvxAsyncCommand(() =>
+        {
+            var loading = new MessageViewModel { MessageType = MessageTypes.Loading, };
+            return CreateMvxNotifyTask(async () =>
                 {
-                    Messages.InsertRange(0, _mapper.Map<IList<MessageViewModel>>(newItems.OrderBy(m => m.Id)));
-                }
+                    IsLoadingMore = true;
+                    Messages.Insert(0, loading);
+                    LoadingOffset = 2;
 
-                IsLoadingMore = false;
-            },
-            ex =>
-            {
-                IsLoadMoreEnabled = false;
-                IsLoadingMore = false;
-            }).Task,() => IsLoadMoreEnabled && !IsLoadingMore);
+                    // Imitate some work
+                    await Task.Delay(5000);
+                    var newItems = (await _messagesRepository.GetItemsAsync(Messages.Count, PAGE_SIZE))?.ToArray();
+                    IsLoadMoreEnabled = newItems?.Length >= PAGE_SIZE;
+
+                    if (newItems?.Length > 0)
+                    {
+                        Messages.InsertRange(0, _mapper.Map<IList<MessageViewModel>>(newItems.OrderBy(m => m.Id)));
+                    }
+
+                    Messages.TryRemove(loading);
+                    LoadingOffset = 1;
+                    IsLoadingMore = false;
+                },
+                ex =>
+                {
+                    Messages.TryRemove(loading);
+                    LoadingOffset = 1;
+                    IsLoadMoreEnabled = false;
+                    IsLoadingMore = false;
+                }).TaskCompleted;
+        },() => IsLoadMoreEnabled && !IsLoadingMore);
     }
 
     public bool IsLoadMoreEnabled { get; set; }
 
     public bool IsLoadingMore { get; set; }
+
+    public int LoadingOffset { get; private set; } = 1;
 
     public ConcurrentObservableCollection<MessageViewModel> Messages { get; } = new ();
 
@@ -177,15 +200,17 @@ public class ChatViewModel : BaseViewModel
                 await AddMessageAsync(new MessageViewModel
                 {
                     Text = "Добро пожаловать в приложение \"LearnEnglish.XN\"",
+                    MessageType = MessageTypes.Operator,
                 });
                 await AddMessageAsync(new MessageViewModel
                 {
-                    Text = "Планируешь начать изучение?",
+                    Text = "Планируешь начать изучение English?",
+                    SelectVariantCommand = _selectVariantCommand,
+                    MessageType = MessageTypes.OperatorWithVariants,
                     Variants = new []
                     {
                         new VariantViewModel
                         {
-                            SelectCommand = _selectVariantCommand,
                             VariantType = VariantTypes.Continue,
                             Text = "Of course",
                         }
@@ -200,22 +225,23 @@ public class ChatViewModel : BaseViewModel
 
             if (!lastMessage.IsMine)
             {
-                lastMessage.Variants?.ForEach(v => v.SelectCommand = _selectVariantCommand);
+                lastMessage.SelectVariantCommand = _selectVariantCommand;
                 return;
             }
 
             await AddContinueMessageAsync();
-        }).Task;
+        }).TaskCompleted;
     }
 
     private Task AddContinueMessageAsync() => AddMessageAsync(new MessageViewModel
     {
-        Text = "Продолжить изучение?",
+        Text = "Продолжить изучение English?",
+        SelectVariantCommand = _selectVariantCommand,
+        MessageType = MessageTypes.OperatorWithVariants,
         Variants = new []
         {
             new VariantViewModel
             {
-                SelectCommand = _selectVariantCommand,
                 VariantType = VariantTypes.Continue,
                 Text = "Of course",
             }

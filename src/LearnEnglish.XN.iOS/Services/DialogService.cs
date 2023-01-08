@@ -66,10 +66,7 @@ namespace LearnEnglish.XN.iOS.Services
             }
         }
 
-        public Task DisplaySuccessMessageAsync()
-        {
-            throw new System.NotImplementedException();
-        }
+        public Task DisplaySuccessMessageAsync()=> Task.CompletedTask;
 
         public void ShowToast(string text)
         {
