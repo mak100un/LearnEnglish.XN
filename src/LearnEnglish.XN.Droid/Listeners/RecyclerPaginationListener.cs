@@ -24,7 +24,7 @@ public class RecyclerPaginationListener : RecyclerView.OnScrollListener, IMvxBin
     {
         base.OnScrolled(recyclerView, dx, dy);
 
-        if (_layoutManager.FindLastVisibleItemPosition() > _layoutManager.ItemCount - 1 - LoadingOffset)
+        if (_layoutManager.FindFirstVisibleItemPosition() > LoadingOffset)
         {
             return;
         }
