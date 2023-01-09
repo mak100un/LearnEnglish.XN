@@ -7,4 +7,5 @@
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     android:background="@android:color/transparent"
     android:layout_marginHorizontal="16dp"
+    android:rotation="180"
     android:id="@+id/messages_recyclerview"/>

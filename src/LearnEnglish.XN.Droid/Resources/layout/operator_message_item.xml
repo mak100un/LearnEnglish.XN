@@ -10,4 +10,5 @@
     android:paddingVertical="10dp"
     android:paddingHorizontal="16dp"
     android:layout_marginBottom="16dp"
+    android:rotation="180"
     android:layout_marginRight="100dp" />

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using MvvmCross.Commands;
 using Swordfish.NET.Collections;
 using Swordfish.NET.Collections.Auxiliary;
-using Xamarin.Essentials;
 
 namespace LearnEnglish.XN.Core.ViewModels;
 
@@ -143,7 +141,7 @@ public class ChatViewModel : BaseViewModel
                 DialogService.ShowToast(ex is LogicException lEx ? lEx.Message : "Произошла неизвестная ошибка");
                 await AddContinueMessageAsync();
                 IsLoading = false;
-            }).TaskCompleted, variant => Messages?.LastOrDefault()?.Variants?.Contains(variant) == true);
+            }).TaskCompleted, variant => Messages?.FirstOrDefault()?.Variants?.Contains(variant) == true);
 
         LoadMoreCommand = new MvxAsyncCommand(() =>
         {
@@ -151,7 +149,7 @@ public class ChatViewModel : BaseViewModel
             return CreateMvxNotifyTask(async () =>
                 {
                     IsLoadingMore = true;
-                    Messages.Insert(0, loading);
+                    Messages.Add(loading);
                     LoadingOffset = 2;
 
                     // Imitate some work
@@ -161,7 +159,7 @@ public class ChatViewModel : BaseViewModel
 
                     if (newItems?.Length > 0)
                     {
-                        Messages.InsertRange(0, _mapper.Map<IList<MessageViewModel>>(newItems.OrderBy(m => m.Id)));
+                        Messages.AddRange(_mapper.Map<IList<MessageViewModel>>(newItems));
                     }
 
                     Messages.TryRemove(loading);
@@ -219,9 +217,9 @@ public class ChatViewModel : BaseViewModel
                 return;
             }
 
-            var messages = _mapper.Map<IList<MessageViewModel>>(newItems.OrderBy(m => m.Id));
+            var messages = _mapper.Map<IList<MessageViewModel>>(newItems);
             var lastMessage = messages.Last();
-            Messages.InsertRange(0, messages);
+            Messages.AddRange(messages);
 
             if (!lastMessage.IsMine)
             {
@@ -250,7 +248,7 @@ public class ChatViewModel : BaseViewModel
 
     private Task AddMessageAsync(MessageViewModel message)
     {
-        Messages.Add(message);
+        Messages.Insert(0, message);
         return _messagesRepository.InsertAsync(_mapper.Map<MessageDalModel>(message));
     }
 }
