@@ -29,4 +29,17 @@
     <style name="ToolbarColoredBackArrow" parent="AppTheme">
         <item name="colorControlNormal">@color/accentColor</item>
     </style>
+
+    <style name="LaunchButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginVertical">10dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:background">@drawable/launch_action_button_style</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:clickable">true</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
 </resources>

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Android.Content;
+using Android.Graphics;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
@@ -100,6 +101,7 @@ public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPro
                 TextAlignment = TextAlignment.Center,
                 Text = variant.Text,
             };
+            button.SetTextColor(Color.Black);
             button.SetBackgroundResource(Resource.Drawable.variant_item_background);
             button.SetPadding(verticalPadding, horizontalPadding, verticalPadding, horizontalPadding);
             set.Bind(button)
