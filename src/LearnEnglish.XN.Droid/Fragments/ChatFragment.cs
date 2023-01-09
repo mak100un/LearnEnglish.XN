@@ -21,6 +21,8 @@ public class ChatFragment : BaseFragment<ChatViewModel>
 
         var recyclerView = view.FindViewById<RecyclerView>(Resource.Id.messages_recyclerview);
         var layoutManager = recyclerView.GetLayoutManager() as LinearLayoutManager;
+        layoutManager.StackFromEnd = true;
+        layoutManager.ReverseLayout = false;
         var adapter = new MessagesAdapter(BindingContext as IMvxAndroidBindingContext, layoutManager, () => recyclerView?.SmoothScrollToPosition(ViewModel.Messages.Count - 1));
         recyclerView.SetAdapter(adapter);
 

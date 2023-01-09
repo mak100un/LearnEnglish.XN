@@ -91,7 +91,7 @@ public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPro
 
         using var layoutParams = new LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
         var margin = Context.ToPixels(8);
-        layoutParams.SetMargins(0, 0,margin,margin);
+        layoutParams.SetMargins(margin, 0,margin,margin);
 
         foreach (var variant in Variants)
         {

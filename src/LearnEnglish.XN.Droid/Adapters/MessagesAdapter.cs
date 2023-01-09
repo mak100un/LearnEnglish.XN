@@ -100,7 +100,6 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
 
     public override int GetItemViewType(int position) => (int)(Messages?.ElementAtOrDefault(position)?.MessageType ?? MessageTypes.Mine) ;
 
-
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -130,7 +129,7 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
             case NotifyCollectionChangedAction.Add when e.NewItems?.Count == 1:
                 {
                     var shouldScroll = e.NewStartingIndex != 0
-                        && _layoutManager?.FindLastVisibleItemPosition() == ItemCount - 2;
+                        && _layoutManager?.FindLastVisibleItemPosition() >= ItemCount - 3;
                     NotifyItemInserted(e.NewStartingIndex);
                     if (shouldScroll)
                     {
@@ -141,8 +140,7 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
                 }
             case NotifyCollectionChangedAction.Add:
                 {
-                    var shouldScroll = e.NewStartingIndex != 0
-                                       && _layoutManager?.FindLastVisibleItemPosition() == ItemCount - 2;
+                    var shouldScroll = _layoutManager?.FindLastVisibleItemPosition() >= ItemCount - 2;
                     NotifyItemRangeInserted(e.NewStartingIndex, e.NewItems!.Count);
                     if (shouldScroll)
                     {

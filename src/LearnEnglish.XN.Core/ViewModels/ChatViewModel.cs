@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,13 +14,12 @@ using Microsoft.Extensions.Logging;
 using MvvmCross.Commands;
 using Swordfish.NET.Collections;
 using Swordfish.NET.Collections.Auxiliary;
-using Xamarin.Essentials;
 
 namespace LearnEnglish.XN.Core.ViewModels;
 
 public class ChatViewModel : BaseViewModel
 {
-    private const int PAGE_SIZE = 15;
+    private const int PAGE_SIZE = 10;
 
     private readonly IMessagesRepository _messagesRepository;
     private readonly ICommand _selectVariantCommand;
@@ -121,7 +119,7 @@ public class ChatViewModel : BaseViewModel
 
                     await AddMessageAsync(new MessageViewModel
                     {
-                        Text = $"Выберете правильный перевод слова \"{correctVariant}\"",
+                        Text = $"Выберите правильный перевод слова \"{correctVariant.Key}\"",
                         SelectVariantCommand = _selectVariantCommand,
                         MessageType = MessageTypes.OperatorWithVariants,
                         Variants = translations?.OrderBy(t => t.Key)

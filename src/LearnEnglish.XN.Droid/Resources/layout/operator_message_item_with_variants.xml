@@ -15,6 +15,7 @@
         android:paddingVertical="10dp"
         android:paddingHorizontal="16dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="100dp" />
 
     <learnenglish.xn.droid.widgets.VariantsLayout
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="100dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
         app:flexWrap="wrap"
         app:alignItems="stretch"
         app:alignContent="stretch"
