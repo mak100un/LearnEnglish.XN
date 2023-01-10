@@ -1,65 +1,90 @@
 using System;
 using System.Collections.Generic;
-using Foundation;
+using CoreGraphics;
+using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.ViewModels;
+using LearnEnglish.XN.iOS.Cells;
+using LearnEnglish.XN.iOS.DataSources;
+using LearnEnglish.XN.iOS.ViewLayouts;
 using MvvmCross.Binding.BindingContext;
-using MvvmCross.Platforms.Ios.Binding.Views;
 using MvvmCross.Platforms.Ios.Presenters.Attributes;
-using MvvmCross.Platforms.Ios.Views;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.ViewControllers;
 
 [MvxChildPresentation]
-public class ChatViewController : MvxTableViewController<ChatViewModel>
+public class ChatViewController : BaseViewController<ChatViewModel>
 {
-    public override void ViewDidLoad()
+    private readonly IReadOnlyDictionary<string, Type> _messageTypesToCellsMapper = new Dictionary<string, Type>
     {
-        base.ViewDidLoad();
+        [nameof(MessageTypes.Loading)] = typeof(LoaderCell),
+        [nameof(MessageTypes.Mine)] = typeof(MyMessageCell),
+        [nameof(MessageTypes.Operator)] = typeof(OperatorMessageCell),
+        [nameof(MessageTypes.OperatorWithVariants)] = typeof(OperatorMessageWithVariantsCell),
+    };
 
-        var source = new TableSource(TableView);
-        this.AddBindings(new Dictionary<object, string>
+    private UICollectionView _collectionView;
+    private MessagesDataSource _dataSource;
+    private MessagesFlowDelegateLayout _flowDelegateLayout;
+
+    protected override void CreateView()
+    {
+        base.CreateView();
+
+        View.Add(_collectionView = new UICollectionView(CGRect.Empty, new MessagesFlowLayout())
         {
-            {source, "ItemsSource Messages"}
+            TranslatesAutoresizingMaskIntoConstraints = false,
         });
 
-        TableView.Source = source;
-        //TableView.RowHeight = KittenCell.GetCellHeight();
-        TableView.ReloadData();
+        _collectionView.BackgroundView = new UIImageView
+        {
+            Image = new UIImage("background_img.jpeg"),
+            ContentMode = UIViewContentMode.ScaleAspectFill,
+        };
+
+        foreach (var messageCell in _messageTypesToCellsMapper)
+        {
+            _collectionView.RegisterClassForCell(messageCell.Value, messageCell.Key);
+        }
+        _dataSource = new MessagesDataSource(_collectionView);
+        _collectionView.DataSource = _dataSource;
+        _flowDelegateLayout = new MessagesFlowDelegateLayout(_collectionView);
+        _collectionView.Delegate = _flowDelegateLayout;
+        _collectionView.ReloadData();
     }
 
-    public class TableSource : MvxTableViewSource
+    protected override void BindView()
     {
-        private static readonly NSString KittenCellIdentifier = new NSString("KittenCell");
-        private static readonly NSString DogCellIdentifier = new NSString("DogCell");
+        base.BindView();
 
-        public TableSource(UITableView tableView)
-            : base(tableView)
+        var set = this.CreateBindingSet<ChatViewController, ChatViewModel>();
+
+        set.Bind(_flowDelegateLayout)
+            .For(x => x.LoadMoreCommand)
+            .To(vm => vm.LoadMoreCommand);
+
+        set.Bind(_flowDelegateLayout)
+            .For(x => x.LoadingOffset)
+            .To(vm => vm.LoadingOffset);
+
+        set
+            .Bind(_dataSource)
+            .For(v => v.Messages)
+            .To(vm => vm.Messages);
+
+        set.Apply();
+    }
+
+    protected override void LayoutView()
+    {
+        base.LayoutView();
+        var safeAreaGuide = View.SafeAreaLayoutGuide;
+        NSLayoutConstraint.ActivateConstraints(new []
         {
-            tableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-            tableView.RegisterNibForCellReuse(UINib.FromName("KittenCell", NSBundle.MainBundle),
-                KittenCellIdentifier);
-            tableView.RegisterNibForCellReuse(UINib.FromName("DogCell", NSBundle.MainBundle), DogCellIdentifier);
-        }
-
-        protected override UITableViewCell GetOrCreateCellFor(UITableView tableView, NSIndexPath indexPath,
-            object item)
-        {
-            NSString cellIdentifier;
-            //if (item is Kitten)
-            {
-                cellIdentifier = KittenCellIdentifier;
-            }
-            //else if (item is Dog)
-            {
-                cellIdentifier = DogCellIdentifier;
-            }
-            //else
-            {
-                throw new ArgumentException("Unknown animal of type " + item.GetType().Name);
-            }
-
-            return (UITableViewCell) TableView.DequeueReusableCell(cellIdentifier, indexPath);
-        }
+            _collectionView.BottomAnchor.ConstraintEqualTo(safeAreaGuide.BottomAnchor),
+            _collectionView.TopAnchor.ConstraintEqualTo(NavigationController.NavigationBar.BottomAnchor),
+            _collectionView.LeadingAnchor.ConstraintEqualTo(safeAreaGuide.LeadingAnchor),
+            _collectionView.TrailingAnchor.ConstraintEqualTo(safeAreaGuide.TrailingAnchor),
+        });
     }
 }

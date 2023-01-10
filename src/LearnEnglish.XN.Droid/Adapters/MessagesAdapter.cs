@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Android.Views;
 using AndroidX.RecyclerView.Widget;
 using LearnEnglish.XN.Core.Definitions.Enums;
@@ -42,14 +40,14 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
 
         if (message == null
             || message.MessageType == MessageTypes.Loading
-            || holder is not BaseRecyclerViewHolder viewHolder)
+            || holder is not BaseMessageViewHolder viewHolder)
         {
             return;
         }
 
         viewHolder.DataContext = message;
 
-        var set = viewHolder.CreateBindingSet<BaseRecyclerViewHolder, MessageViewModel>();
+        var set = viewHolder.CreateBindingSet<BaseMessageViewHolder, MessageViewModel>();
         switch (holder)
         {
             case OperatorMessageViewHolder operatorMessageViewHolder:
@@ -66,12 +64,12 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
                     .To(vm => vm.Text);
 
                 set.Bind(operatorMessageWithVariantsViewHolder.VariantsLayout)
-                    .For(x => x.Variants)
-                    .To(vm => vm.Variants);
-
-                set.Bind(operatorMessageWithVariantsViewHolder.VariantsLayout)
                     .For(x => x.DataContext)
                     .To(vm => vm);
+
+                set.Bind(operatorMessageWithVariantsViewHolder.VariantsLayout)
+                    .For(x => x.Variants)
+                    .To(vm => vm.Variants);
 
                 break;
             case MyMessageViewHolder myMessageViewHolder:
@@ -102,19 +100,6 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
-
     private void OnMessagesChanged(object oldValue, object newValue)
     {
         (oldValue as ConcurrentObservableCollection<MessageViewModel>)?.Then(value => value.CollectionChanged -= OnCollectionChanged);
@@ -140,7 +125,7 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
                 }
             case NotifyCollectionChangedAction.Add:
                 {
-                    var shouldScroll = _layoutManager?.FindLastVisibleItemPosition() >= ItemCount - 2;
+                    var shouldScroll = _layoutManager?.FindLastVisibleItemPosition() >= ItemCount - 3;
                     NotifyItemRangeInserted(e.NewStartingIndex, e.NewItems!.Count);
                     if (shouldScroll)
                     {

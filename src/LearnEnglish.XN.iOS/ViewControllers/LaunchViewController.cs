@@ -71,6 +71,7 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
             Configuration = userNameButtonConfig,
         };
         _userNameButton.Layer.CornerRadius = 16;
+        _userNameButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 
         _stack.Add(_userNameButton);
 
@@ -84,6 +85,7 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
             Configuration = chatButtonConfig,
         };
         _chatButton.Layer.CornerRadius = 16;
+        _chatButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 
         _stack.Add(_chatButton);
     }
@@ -97,7 +99,7 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
         NSLayoutConstraint.ActivateConstraints(new []
         {
             _backgroundImage.BottomAnchor.ConstraintEqualTo(safeAreaGuide.BottomAnchor),
-            _backgroundImage.TopAnchor.ConstraintEqualTo(safeAreaGuide.TopAnchor),
+            _backgroundImage.TopAnchor.ConstraintEqualTo(NavigationController.NavigationBar.BottomAnchor),
             _backgroundImage.LeadingAnchor.ConstraintEqualTo(safeAreaGuide.LeadingAnchor),
             _backgroundImage.TrailingAnchor.ConstraintEqualTo(safeAreaGuide.TrailingAnchor),
             _image.HeightAnchor.ConstraintEqualTo(200),

@@ -9,6 +9,6 @@
     android:id="@+id/operator_message_textview"
     android:paddingVertical="10dp"
     android:paddingHorizontal="16dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginVertical="8dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="100dp" />

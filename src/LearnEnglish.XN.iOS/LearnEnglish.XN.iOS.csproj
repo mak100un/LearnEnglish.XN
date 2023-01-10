@@ -77,6 +77,13 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Cells\BaseMessageCell.cs" />
+    <Compile Include="Cells\LoaderCell.cs" />
+    <Compile Include="Cells\MyMessageCell.cs" />
+    <Compile Include="Cells\OperatorMessageCell.cs" />
+    <Compile Include="Cells\OperatorMessageWithVariantsCell.cs" />
+    <Compile Include="DataSources\MessagesDataSource.cs" />
+    <Compile Include="Extensions\UIViewExtensions.cs" />
     <Compile Include="Linker\LinkerPleaseInclude.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
@@ -87,6 +94,9 @@
     <Compile Include="ViewControllers\ChatViewController.cs" />
     <Compile Include="ViewControllers\LaunchViewController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewLayouts\MessagesFlowDelegateLayout.cs" />
+    <Compile Include="ViewLayouts\MessagesFlowLayout.cs" />
+    <Compile Include="Views\VariantsLayout.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
   </ItemGroup>

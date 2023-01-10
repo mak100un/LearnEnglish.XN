@@ -8,14 +8,14 @@ using MvvmCross.Binding.BindingContext;
 
 namespace LearnEnglish.XN.Droid.ViewHolder;
 
-public abstract class BaseRecyclerViewHolder : RecyclerView.ViewHolder, IMvxBindingContextOwner
+public abstract class BaseMessageViewHolder : RecyclerView.ViewHolder, IMvxBindingContextOwner
 {
-    protected BaseRecyclerViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
+    protected BaseMessageViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
         : base(javaReference, transfer)
     {
     }
 
-    protected BaseRecyclerViewHolder(View itemView, IMvxBindingContext context)
+    protected BaseMessageViewHolder(View itemView, IMvxBindingContext context)
         : base(itemView)
     {
         BindingContext = context;
@@ -40,10 +40,13 @@ public abstract class BaseRecyclerViewHolder : RecyclerView.ViewHolder, IMvxBind
 
     protected override void Dispose(bool disposing)
     {
+        if (disposing)
+        {
+            DataContext = null;
+            BindingContext?.ClearAllBindings();
+            BindingContext?.DisposeIfDisposable();
+            BindingContext = null;
+        }
         base.Dispose(disposing);
-        DataContext = null;
-        BindingContext?.ClearAllBindings();
-        BindingContext?.DisposeIfDisposable();
-        BindingContext = null;
     }
 }

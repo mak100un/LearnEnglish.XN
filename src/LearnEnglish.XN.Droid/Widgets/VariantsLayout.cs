@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
@@ -17,8 +16,6 @@ using MvvmCross.Binding.Attributes;
 using MvvmCross.Binding.BindingContext;
 using MvvmCross.Binding.ValueConverters;
 using MvvmCross.Platforms.Android.Binding;
-using MvvmCross.Platforms.Android.Binding.BindingContext;
-using MvvmCross.Platforms.Android.Binding.Views;
 using PropertyChanged;
 
 namespace LearnEnglish.XN.Droid.Widgets;
@@ -33,13 +30,13 @@ public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPro
     public VariantsLayout(Context context)
         : base(context)
     {
-        BindingContext = new MvxAndroidBindingContext(context, (IMvxLayoutInflaterHolder)context);
+        this.CreateBindingContext();
     }
 
     public VariantsLayout(Context context, IAttributeSet attrs)
         : base(context, attrs)
     {
-        BindingContext = new MvxAndroidBindingContext(Context, (IMvxLayoutInflaterHolder)Context);
+        this.CreateBindingContext();
     }
 
     public VariantsLayout(Context context, IAttributeSet attrs, int defStyleAttr)
@@ -70,11 +67,14 @@ public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPro
 
     protected override void Dispose(bool disposing)
     {
+        if (disposing)
+        {
+            DataContext = null;
+            BindingContext?.ClearAllBindings();
+            BindingContext?.DisposeIfDisposable();
+            BindingContext = null;
+        }
         base.Dispose(disposing);
-        DataContext = null;
-        BindingContext?.ClearAllBindings();
-        BindingContext?.DisposeIfDisposable();
-        BindingContext = null;
     }
 
     private void OnVariantsChanged()
@@ -116,17 +116,4 @@ public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPro
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
 }

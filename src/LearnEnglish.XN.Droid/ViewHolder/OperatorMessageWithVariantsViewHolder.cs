@@ -7,7 +7,7 @@ using MvvmCross.Binding.BindingContext;
 
 namespace LearnEnglish.XN.Droid.ViewHolder;
 
-public class OperatorMessageWithVariantsViewHolder : BaseRecyclerViewHolder
+public class OperatorMessageWithVariantsViewHolder : BaseMessageViewHolder
 {
     public OperatorMessageWithVariantsViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
         : base(javaReference, transfer)
