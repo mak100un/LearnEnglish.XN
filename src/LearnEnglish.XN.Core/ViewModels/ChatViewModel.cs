@@ -75,6 +75,7 @@ public class ChatViewModel : BaseViewModel
                     newVariants?.ForEach(newVariant =>
                         translations.Add(new KeyValuePair<string, string>(newVariant, newVariant)));
 
+                    // Code under commented cause key became disabled so show variants without translation.
                     /*await Task.WhenAll(newVariants.Select(v => Task.Run(async () =>
                     {
                         var translation = await translateService.TranslateAsync(v);
