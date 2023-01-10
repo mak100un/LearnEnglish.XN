@@ -167,7 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
-    <InterfaceDefinition Include="Test.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\launch_image.png" />

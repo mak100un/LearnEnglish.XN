@@ -6,7 +6,7 @@ using MvvmCross.Platforms.Android.Presenters.Attributes;
 
 namespace LearnEnglish.XN.Droid.Fragments;
 
-[MvxFragmentPresentation(IsCacheableFragment = true, ActivityHostViewModelType = typeof(MainViewModel), FragmentContentId = Resource.Id.content_frame, AddToBackStack = true)]
+[MvxFragmentPresentation(IsCacheableFragment = true, ActivityHostViewModelType = typeof(MainViewModel), FragmentContentId = Resource.Id.content_frame, AddToBackStack = false)]
 public class LaunchFragment : BaseFragment<LaunchViewModel>
 {
     private MediaPlayer _mediaPlayer;

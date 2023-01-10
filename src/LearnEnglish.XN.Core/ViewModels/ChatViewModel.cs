@@ -139,7 +139,7 @@ public class ChatViewModel : BaseViewModel
             },
             async ex =>
             {
-                DialogService.ShowToast(ex is LogicException lEx ? lEx.Message : "Произошла неизвестная ошибка");
+                DialogService.ShowToast(ex is LogicException lEx ? lEx.Message : "Произошла неизвестная ошибка. Возможно отсутствует интернет соединение");
                 await AddContinueMessageAsync();
                 IsLoading = false;
             }).TaskCompleted, variant => Messages?.LastOrDefault()?.Variants?.Contains(variant) == true);

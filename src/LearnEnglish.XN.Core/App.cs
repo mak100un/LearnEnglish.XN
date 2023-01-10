@@ -33,10 +33,6 @@ namespace LearnEnglish.XN
             Mvx.IoCProvider.LazyConstructAndRegisterSingleton<HttpClient, HttpClient>();
             Mvx.IoCProvider.LazyConstructAndRegisterSingleton(Mapper.Build);
 
-            var navigationService = new NavigationService(Mvx.IoCProvider.Resolve<IMvxViewModelLoader>(), Mvx.IoCProvider.Resolve<IMvxViewDispatcher>(), Mvx.IoCProvider);
-            Mvx.IoCProvider.LazyConstructAndRegisterSingleton<IMvxNavigationService>(() => navigationService);
-            Mvx.IoCProvider.LazyConstructAndRegisterSingleton<INavigationService>(() => navigationService);
-
             RegisterAppStart<LaunchViewModel>();
         }
     }

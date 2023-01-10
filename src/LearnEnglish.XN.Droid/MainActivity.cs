@@ -5,16 +5,14 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using LearnEnglish.XN.Core.Definitions.Extensions;
-using LearnEnglish.XN.Core.Services.Interfaces;
 using LearnEnglish.XN.Core.ViewModels;
-using MvvmCross;
 using MvvmCross.Platforms.Android.Presenters.Attributes;
 using MvvmCross.Platforms.Android.Views;
 
 namespace LearnEnglish.XN.Droid
 {
     [MvxActivityPresentation]
-    [Activity(Theme = "@style/AppTheme", Label = "LearnEnglish.XN", ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleInstance, WindowSoftInputMode = SoftInput.AdjustPan)]
+    [Activity(Theme = "@style/AppTheme", Label = "LearnEnglish.XN", ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTask, WindowSoftInputMode = SoftInput.AdjustPan)]
     public class MainActivity : MvxActivity<MainViewModel>
     {
         private Toolbar _toolbar;
@@ -40,16 +38,6 @@ namespace LearnEnglish.XN.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        public override async void OnBackPressed()
-        {
-            if (await Mvx.IoCProvider.Resolve<INavigationService>().NavigateBackAsync())
-            {
-                return;
-            }
-
-            base.OnBackPressed();
         }
 
         protected override void OnDestroy()
