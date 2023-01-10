@@ -3,7 +3,7 @@ LearnEnglish application created with the help of Xamarin.Native (iOS/Android)
 
 Screenshots:
 
-![photo1673389268](https://user-images.githubusercontent.com/44783367/211675303-07d3612d-d0d1-4e11-8fbf-b6910ebf98f7.jpeg)
+![photo1673389268](https://user-images.githubusercontent.com/44783367/211675303-07d3612d-d0d1-4e11-8fbf-b6910ebf98f7.jpeg width="150")
 
 ![photo1673389389](https://user-images.githubusercontent.com/44783367/211675317-d90fe346-191d-4145-9a9a-256c6c819816.jpeg)
 
