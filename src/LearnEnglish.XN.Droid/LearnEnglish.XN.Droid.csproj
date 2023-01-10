@@ -52,9 +52,9 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidLinkMode>None</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
-    <EnableProguard>true</EnableProguard>
+    <EnableProguard>false</EnableProguard>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android.Export" />
