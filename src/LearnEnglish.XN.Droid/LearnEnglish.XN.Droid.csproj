@@ -147,11 +147,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\background_img.jpeg" />
-    <AndroidResource Include="Resources\drawable\cola.gif" />
     <AndroidResource Include="Resources\drawable\launch_action_button_style.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\my_message_background.xml" />
+    <AndroidResource Include="Resources\drawable\new_year.gif" />
     <AndroidResource Include="Resources\drawable\operator_message_background.xml" />
     <AndroidResource Include="Resources\drawable\variant_item_background.xml" />
     <AndroidResource Include="Resources\layout\chat_layout.xml" />

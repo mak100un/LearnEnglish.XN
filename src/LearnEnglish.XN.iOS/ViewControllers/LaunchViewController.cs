@@ -140,7 +140,7 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
         set
             .Bind(_image)
             .For(v => v.ImagePath)
-            .To(vm => "res:cola.gif");
+            .To(vm => "res:new_year.gif");
 
         set
             .Bind(_userNameButton)
