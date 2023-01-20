@@ -23379,7 +23379,7 @@ namespace LearnEnglish.XN.Droid
 		{
 			
 			// aapt resource value: 0x7F0E0000
-			public const int train = 2131623936;
+			public const int new_year = 2131623936;
 			
 			static Raw()
 			{

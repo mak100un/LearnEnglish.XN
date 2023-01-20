@@ -9,8 +9,6 @@ namespace LearnEnglish.XN.Core.Services;
 
 public class RandomizerService : BaseRestService, IRandomizerService
 {
-
-
     public RandomizerService(HttpClient client)
         : base(client)
     {

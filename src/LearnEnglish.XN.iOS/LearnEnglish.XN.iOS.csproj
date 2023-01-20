@@ -191,10 +191,7 @@
     <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\Contents.json" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\train.mp3">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </BundleResource>
+    <BundleResource Include="Resources\new_year.mp3" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\background_img.jpeg">

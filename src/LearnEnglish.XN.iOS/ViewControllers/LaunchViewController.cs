@@ -165,7 +165,7 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
         {
             if (_player == null)
             {
-                var url = NibBundle?.GetUrlForResource("train", "mp3");
+                var url = NibBundle?.GetUrlForResource("new_year", "mp3");
                 AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
                 AVAudioSession.SharedInstance().SetActive(true);
                 _player = AVAudioPlayer.FromUrl(url);

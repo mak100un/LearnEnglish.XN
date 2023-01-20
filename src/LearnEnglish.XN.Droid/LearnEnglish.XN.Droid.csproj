@@ -161,7 +161,7 @@
     <AndroidResource Include="Resources\layout\my_message_item.xml" />
     <AndroidResource Include="Resources\layout\operator_message_item.xml" />
     <AndroidResource Include="Resources\layout\operator_message_item_with_variants.xml" />
-    <AndroidResource Include="Resources\raw\train.mp3" />
+    <AndroidResource Include="Resources\raw\new_year.mp3" />
     <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\values\colors.xml" />

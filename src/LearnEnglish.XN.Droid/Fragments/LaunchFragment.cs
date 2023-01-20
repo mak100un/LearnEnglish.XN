@@ -20,7 +20,7 @@ public class LaunchFragment : BaseFragment<LaunchViewModel>
         {
             if (_mediaPlayer == null)
             {
-                _mediaPlayer = MediaPlayer.Create(Activity, Resource.Raw.train);
+                _mediaPlayer = MediaPlayer.Create(Activity, Resource.Raw.new_year);
                 _mediaPlayer.Looping = true;
             }
             _mediaPlayer?.Start();
