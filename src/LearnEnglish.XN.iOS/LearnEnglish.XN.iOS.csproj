@@ -27,8 +27,8 @@
     <MtouchExtraArgs>--linkskip=LearnEnglish.XN.Core</MtouchExtraArgs>
     <MtouchSdkVersion>16.2</MtouchSdkVersion>
     <LangVersion>8.0</LangVersion>
-    <CodesignProvision></CodesignProvision>
-    <CodesignKey>Apple Development: applitsm@mts.ru (46G2BWNYF3)</CodesignKey>
+    <CodesignProvision>iOS Team Provisioning Profile: com.incompany.LearnEnglish.XN</CodesignProvision>
+    <CodesignKey>Apple Development: mak100un5@gmail.com (XRFP7JG58Q)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -57,7 +57,7 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchExtraArgs>--linkskip=LearnEnglish.XN.Core</MtouchExtraArgs>
-    <CodesignProvision></CodesignProvision>
+    <CodesignProvision>iOS Team Provisioning Profile: com.incompany.LearnEnglish.XN</CodesignProvision>
     <MtouchSdkVersion>16.2</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">

@@ -27,7 +27,7 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
         _onItemAdded = onItemAdded;
     }
 
-    public IMvxAndroidBindingContext BindingContext { get; set; }
+    public IMvxAndroidBindingContext BindingContext { get; }
 
     public override int ItemCount => Messages?.Count ?? 0;
 
