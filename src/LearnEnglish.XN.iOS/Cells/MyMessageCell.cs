@@ -1,4 +1,7 @@
+using System;
+using Cirrious.FluentLayouts.Touch;
 using CoreGraphics;
+using Foundation;
 using LearnEnglish.XN.Core.ViewModels.Items;
 using MvvmCross.Binding.BindingContext;
 using UIKit;
@@ -7,6 +10,7 @@ namespace LearnEnglish.XN.iOS.Cells;
 
 public class MyMessageCell : BaseMessageCell
 {
+    [Export("initWithFrame:")]
     public MyMessageCell(CGRect frame)
         : base(frame)
     {
@@ -20,12 +24,13 @@ public class MyMessageCell : BaseMessageCell
             TextAlignment = UITextAlignment.Center,
             TextColor = UIColor.Black,
             Font = UIFont.SystemFontOfSize(20),
-            LayoutMargins = new UIEdgeInsets(10, 16, 10, 16)
+            TranslatesAutoresizingMaskIntoConstraints = false,
+            Lines = 0,
+            LineBreakMode = UILineBreakMode.WordWrap
         };
         var labelView = new UIView
         {
             BackgroundColor = UIColor.FromRGB(242, 243, 247),
-            LayoutMargins = new UIEdgeInsets(8, 0, 8, 0),
         };
         labelView.Add(label);
         labelView.Layer.CornerRadius = 16;
@@ -36,16 +41,16 @@ public class MyMessageCell : BaseMessageCell
         NSLayoutConstraint.ActivateConstraints(new []
         {
             // label
-            label.BottomAnchor.ConstraintEqualTo(labelView.BottomAnchor),
-            label.TrailingAnchor.ConstraintEqualTo(labelView.TrailingAnchor),
-            label.LeadingAnchor.ConstraintEqualTo(labelView.LeadingAnchor),
-            label.TopAnchor.ConstraintEqualTo(labelView.TopAnchor),
+            label.BottomAnchor.ConstraintEqualTo(labelView.BottomAnchor, -10),
+            label.TrailingAnchor.ConstraintEqualTo(labelView.TrailingAnchor, -16),
+            label.LeadingAnchor.ConstraintEqualTo(labelView.LeadingAnchor, 16),
+            label.TopAnchor.ConstraintEqualTo(labelView.TopAnchor, 10),
 
             // labelView
             labelView.LeadingAnchor.ConstraintGreaterThanOrEqualTo(LeadingAnchor, 100),
             labelView.TrailingAnchor.ConstraintEqualTo(TrailingAnchor, -16),
-            labelView.TopAnchor.ConstraintEqualTo(TopAnchor),
-            labelView.BottomAnchor.ConstraintEqualTo(BottomAnchor),
+            labelView.TopAnchor.ConstraintEqualTo(TopAnchor, 8),
+            labelView.BottomAnchor.ConstraintEqualTo(BottomAnchor, -8),
         });
 
         this.DelayBind(() =>
@@ -58,5 +63,7 @@ public class MyMessageCell : BaseMessageCell
 
             set.Apply();
         });
+
+        this.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
     }
 }

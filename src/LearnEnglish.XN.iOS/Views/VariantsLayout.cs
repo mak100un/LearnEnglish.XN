@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using LearnEnglish.XN.Core.ViewModels.Items;
+using LearnEnglish.XN.iOS.Extensions;
 using MvvmCross.Base;
 using MvvmCross.Binding.Attributes;
 using MvvmCross.Binding.BindingContext;
@@ -82,34 +83,23 @@ public class VariantsLayout : UIStackView, IMvxBindingContextOwner, INotifyPrope
         {
             horizontalStack ??= CreateHorizontalStack();
 
-            using var userNameButtonConfig = UIButtonConfiguration.FilledButtonConfiguration;
-            userNameButtonConfig.TitleAlignment = UIButtonConfigurationTitleAlignment.Center;
-            userNameButtonConfig.Title = variant.Text;
-            var button = new UIButton
-            {
-                HorizontalAlignment = UIControlContentHorizontalAlignment.Center,
-                BackgroundColor = UIColor.White,
-                Configuration = userNameButtonConfig,
-            };
-            button.Layer.CornerRadius = 16;
-            button.SetTitleColor(UIColor.Black, UIControlState.Normal);
-            button.ContentEdgeInsets = new UIEdgeInsets(6, 16, 6, 16);
+            var button = UIButtonExtensions.CreateUIButton(variant.Text);
 
             if (MaxWidth >= horizontalStack.Frame.Width + button.Frame.Width + horizontalStack.Spacing)
             {
-                horizontalStack.Add(button);
+                horizontalStack.AddArrangedSubview(button);
             }
             else if (horizontalStack.Subviews?.Length == 0)
             {
-                horizontalStack.Add(button);
-                Add(horizontalStack);
+                horizontalStack.AddArrangedSubview(button);
+                AddArrangedSubview(horizontalStack);
                 horizontalStack = null;
             }
             else
             {
-                Add(horizontalStack);
+                AddArrangedSubview(horizontalStack);
                 horizontalStack = CreateHorizontalStack();
-                horizontalStack.Add(button);
+                horizontalStack.AddArrangedSubview(button);
             }
 
             set.Bind(button)
@@ -120,7 +110,7 @@ public class VariantsLayout : UIStackView, IMvxBindingContextOwner, INotifyPrope
 
         if (horizontalStack != null)
         {
-            Add(horizontalStack);
+            AddArrangedSubview(horizontalStack);
             horizontalStack = null;
         }
 

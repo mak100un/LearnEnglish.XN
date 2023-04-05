@@ -31,11 +31,10 @@ public class ChatViewController : BaseViewController<ChatViewModel>
     {
         base.CreateView();
 
-        View.Add(_collectionView = new UICollectionView(CGRect.Empty, new MessagesFlowLayout())
-        {
-            TranslatesAutoresizingMaskIntoConstraints = false,
-        });
-
+        var config = new UICollectionLayoutListConfiguration(UICollectionLayoutListAppearance.Plain);
+        var layout = UICollectionViewCompositionalLayout.GetLayout(config);
+        View.Add(_collectionView = new UICollectionView(CGRect.Empty, layout));
+        _collectionView.ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Always;
         _collectionView.BackgroundView = new UIImageView
         {
             Image = new UIImage("background_img.jpeg"),
@@ -46,11 +45,8 @@ public class ChatViewController : BaseViewController<ChatViewModel>
         {
             _collectionView.RegisterClassForCell(messageCell.Value, messageCell.Key);
         }
-        _dataSource = new MessagesDataSource(_collectionView);
-        _collectionView.DataSource = _dataSource;
-        _flowDelegateLayout = new MessagesFlowDelegateLayout(_collectionView);
-        _collectionView.Delegate = _flowDelegateLayout;
-        _collectionView.ReloadData();
+        _collectionView.DataSource = (_dataSource = new MessagesDataSource(_collectionView));
+        _collectionView.Delegate = (_flowDelegateLayout = new MessagesFlowDelegateLayout(_collectionView));
     }
 
     protected override void BindView()
@@ -82,7 +78,7 @@ public class ChatViewController : BaseViewController<ChatViewModel>
         NSLayoutConstraint.ActivateConstraints(new []
         {
             _collectionView.BottomAnchor.ConstraintEqualTo(safeAreaGuide.BottomAnchor),
-            _collectionView.TopAnchor.ConstraintEqualTo(NavigationController.NavigationBar.BottomAnchor),
+            _collectionView.TopAnchor.ConstraintEqualTo(TopLayoutGuide.GetBottomAnchor()),
             _collectionView.LeadingAnchor.ConstraintEqualTo(safeAreaGuide.LeadingAnchor),
             _collectionView.TrailingAnchor.ConstraintEqualTo(safeAreaGuide.TrailingAnchor),
         });

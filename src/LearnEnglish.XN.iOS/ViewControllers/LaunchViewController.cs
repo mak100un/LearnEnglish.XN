@@ -4,6 +4,7 @@ using Cirrious.FluentLayouts.Touch;
 using FFImageLoading.Cross;
 using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.ViewModels;
+using LearnEnglish.XN.iOS.Extensions;
 using Microsoft.Extensions.Logging;
 using MvvmCross.Binding.BindingContext;
 using MvvmCross.Binding.ValueConverters;
@@ -13,7 +14,7 @@ using UIKit;
 
 namespace LearnEnglish.XN.iOS.ViewControllers;
 
-[MvxRootPresentation(WrapInNavigationController = true)]
+[MvxRootPresentation(WrapInNavigationController = true )]
 public class LaunchViewController : BaseViewController<LaunchViewModel>
 {
     private AVAudioPlayer _player;
@@ -45,11 +46,14 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
             TextAlignment = UITextAlignment.Right,
             TextColor = UIColor.White,
             Font = UIFont.SystemFontOfSize(20),
+            LineBreakMode = UILineBreakMode.TailTruncation,
+            Lines = 1,
         });
 
         View.Add(_image = new MvxCachedImageView
         {
             ContentMode = UIViewContentMode.ScaleAspectFit,
+            ImagePath = "res:new_year.gif",
         });
 
         View.Add(_stackContainer = new UIView());
@@ -59,35 +63,12 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
             Alignment = UIStackViewAlignment.Center,
             Axis = UILayoutConstraintAxis.Vertical,
             Spacing = 20,
+            TranslatesAutoresizingMaskIntoConstraints = false,
         });
 
-        using var userNameButtonConfig = UIButtonConfiguration.FilledButtonConfiguration;
-        userNameButtonConfig.TitleAlignment = UIButtonConfigurationTitleAlignment.Center;
-        userNameButtonConfig.Title = "Задать имя";
-        _userNameButton = new UIButton
-        {
-            HorizontalAlignment = UIControlContentHorizontalAlignment.Center,
-            BackgroundColor = UIColor.White,
-            Configuration = userNameButtonConfig,
-        };
-        _userNameButton.Layer.CornerRadius = 16;
-        _userNameButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+        _stack.AddArrangedSubview(_userNameButton = UIButtonExtensions.CreateUIButton("Задать имя"));
 
-        _stack.Add(_userNameButton);
-
-        using var chatButtonConfig = UIButtonConfiguration.FilledButtonConfiguration;
-        chatButtonConfig.TitleAlignment = UIButtonConfigurationTitleAlignment.Center;
-        chatButtonConfig.Title = "Чат";
-        _chatButton = new UIButton
-        {
-            HorizontalAlignment = UIControlContentHorizontalAlignment.Center,
-            BackgroundColor = UIColor.White,
-            Configuration = chatButtonConfig,
-        };
-        _chatButton.Layer.CornerRadius = 16;
-        _chatButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-
-        _stack.Add(_chatButton);
+        _stack.AddArrangedSubview(_chatButton = UIButtonExtensions.CreateUIButton("Чат"));
     }
 
     protected override void LayoutView()
@@ -99,30 +80,34 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
         NSLayoutConstraint.ActivateConstraints(new []
         {
             _backgroundImage.BottomAnchor.ConstraintEqualTo(safeAreaGuide.BottomAnchor),
-            _backgroundImage.TopAnchor.ConstraintEqualTo(NavigationController.NavigationBar.BottomAnchor),
+            _backgroundImage.TopAnchor.ConstraintEqualTo(TopLayoutGuide.GetBottomAnchor()),
             _backgroundImage.LeadingAnchor.ConstraintEqualTo(safeAreaGuide.LeadingAnchor),
             _backgroundImage.TrailingAnchor.ConstraintEqualTo(safeAreaGuide.TrailingAnchor),
+
+            _image.HeightAnchor.ConstraintLessThanOrEqualTo(200),
+            _image.WidthAnchor.ConstraintLessThanOrEqualTo(200),
             _image.HeightAnchor.ConstraintEqualTo(200),
             _stack.TopAnchor.ConstraintGreaterThanOrEqualTo(_stackContainer.TopAnchor),
             _stack.BottomAnchor.ConstraintLessThanOrEqualTo(_stackContainer.BottomAnchor),
+
+            _stackContainer.TopAnchor.ConstraintGreaterThanOrEqualTo(_image.BottomAnchor),
         });
 
         View.AddConstraints(
             // _label
             _label.AtTopOf(_backgroundImage, 6),
             _label.AtLeadingOf(_backgroundImage, 6),
-            _label.AtTrailingOf(_backgroundImage, -6),
+            _label.AtTrailingOf(_backgroundImage, 6),
 
             // _image
-            _image.Below(_label, 156),
+            _image.Below(_label, 150),
             _image.AtLeadingOf(_backgroundImage, 50),
-            _image.AtTrailingOf(_backgroundImage, -50),
+            _image.AtTrailingOf(_backgroundImage, 50),
 
             // _stackContainer
-            _stackContainer.Below(_image),
             _stackContainer.AtLeadingOf(_backgroundImage, 16),
-            _stackContainer.AtTrailingOf(_backgroundImage, -16),
-            _stackContainer.AtBottomOf(_backgroundImage, -40),
+            _stackContainer.AtTrailingOf(_backgroundImage, 16),
+            _stackContainer.AtBottomOf(_backgroundImage, 40),
 
             // _stack
             _stack.WithSameLeading(_stackContainer),
@@ -136,11 +121,6 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
         base.BindView();
 
         var set = this.CreateBindingSet<LaunchViewController, LaunchViewModel>();
-
-        set
-            .Bind(_image)
-            .For(v => v.ImagePath)
-            .To(vm => "res:new_year.gif");
 
         set
             .Bind(_userNameButton)
@@ -171,7 +151,7 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
                 _player = AVAudioPlayer.FromUrl(url);
                 _player.NumberOfLoops = -1;
             }
-            _player?.Play();
+           // _player?.Play();
         }
         catch (Exception e)
         {

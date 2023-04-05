@@ -1,19 +1,15 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using MvvmCross.Binding.BindingContext;
+using CoreGraphics;
+using Foundation;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.ViewLayouts;
 
 public class MessagesFlowDelegateLayout : UICollectionViewDelegateFlowLayout, INotifyPropertyChanged
 {
-    public MessagesFlowDelegateLayout(UICollectionView collectionView)
-    {
-        CollectionView = collectionView;
-    }
+    public MessagesFlowDelegateLayout(UICollectionView collectionView) => CollectionView = collectionView;
 
     public UICollectionView CollectionView { get; }
 
@@ -23,8 +19,8 @@ public class MessagesFlowDelegateLayout : UICollectionViewDelegateFlowLayout, IN
 
     public override void Scrolled(UIScrollView scrollView)
     {
-        base.Scrolled(scrollView);
-        if (CollectionView?.IndexPathsForVisibleItems.OrderBy(index => index.Row).FirstOrDefault()?.Row > LoadingOffset)
+        if (CollectionView?.IndexPathsForVisibleItems?.Any() != true
+            || CollectionView?.IndexPathsForVisibleItems.OrderBy(index => index.Row).FirstOrDefault()?.Row > LoadingOffset)
         {
             return;
         }

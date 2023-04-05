@@ -41,7 +41,7 @@ namespace LearnEnglish.XN.iOS.Services
                 Dispose();
             }));
 
-            alert.AddAction(UIAlertAction.Create(cancel, UIAlertActionStyle.Default,
+            alert.AddAction(UIAlertAction.Create(accept, UIAlertActionStyle.Default,
             a =>
             {
                 window.Hidden = true;

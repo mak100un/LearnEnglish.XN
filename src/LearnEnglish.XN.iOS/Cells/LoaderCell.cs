@@ -1,10 +1,13 @@
+using Cirrious.FluentLayouts.Touch;
 using CoreGraphics;
+using Foundation;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.Cells;
 
 public class LoaderCell : UICollectionViewCell
 {
+    [Export("initWithFrame:")]
     public LoaderCell(CGRect frame)
         : base(frame)
     {
@@ -15,16 +18,17 @@ public class LoaderCell : UICollectionViewCell
     private void InitCell()
     {
         var indicator = new UIActivityIndicatorView { Color = UIColor.White };
-        indicator.LayoutMargins = new UIEdgeInsets(16, 0, 8, 0);
-        Add(indicator);
+        ContentView.Add(indicator);
 
         NSLayoutConstraint.ActivateConstraints(new []
         {
             // indicator
-            indicator.LeadingAnchor.ConstraintEqualTo(LeadingAnchor),
-            indicator.TrailingAnchor.ConstraintEqualTo(TrailingAnchor),
-            indicator.TopAnchor.ConstraintEqualTo(TopAnchor),
-            indicator.BottomAnchor.ConstraintEqualTo(BottomAnchor),
+            indicator.LeadingAnchor.ConstraintEqualTo(ContentView.LeadingAnchor),
+            indicator.TrailingAnchor.ConstraintEqualTo(ContentView.TrailingAnchor),
+            indicator.TopAnchor.ConstraintEqualTo(ContentView.TopAnchor, 16),
+            indicator.BottomAnchor.ConstraintEqualTo(ContentView.BottomAnchor, -8),
         });
+
+        ContentView.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
     }
 }

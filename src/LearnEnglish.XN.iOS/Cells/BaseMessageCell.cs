@@ -1,4 +1,6 @@
+using System;
 using CoreGraphics;
+using Foundation;
 using MvvmCross.Base;
 using MvvmCross.Binding.Attributes;
 using MvvmCross.Binding.BindingContext;
@@ -8,11 +10,15 @@ namespace LearnEnglish.XN.iOS.Cells;
 
 public abstract class BaseMessageCell : UICollectionViewCell, IMvxBindingContextOwner
 {
+    public override CGSize SystemLayoutSizeFittingSize(CGSize size) => ContentView.SystemLayoutSizeFittingSize(new CGSize(UIScreen.MainScreen.Bounds.Width, 1));
+
+
+    [Export("initWithFrame:")]
     protected BaseMessageCell(CGRect frame)
         : base(frame)
     {
         this.CreateBindingContext();
-        BackgroundColor = UIColor.Clear;
+        BackgroundColor = UIColor.Green;
     }
 
     public IMvxBindingContext BindingContext { get; set; }

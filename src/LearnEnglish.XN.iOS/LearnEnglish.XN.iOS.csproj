@@ -26,7 +26,6 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchExtraArgs>--linkskip=LearnEnglish.XN.Core</MtouchExtraArgs>
     <MtouchSdkVersion>16.2</MtouchSdkVersion>
-    <LangVersion>8.0</LangVersion>
     <CodesignProvision>iOS Team Provisioning Profile: com.incompany.LearnEnglish.XN</CodesignProvision>
     <CodesignKey>Apple Development: mak100un5@gmail.com (XRFP7JG58Q)</CodesignKey>
   </PropertyGroup>
@@ -40,7 +39,6 @@
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <MtouchExtraArgs>--linkskip=LearnEnglish.XN.Core</MtouchExtraArgs>
-    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -83,6 +81,7 @@
     <Compile Include="Cells\OperatorMessageCell.cs" />
     <Compile Include="Cells\OperatorMessageWithVariantsCell.cs" />
     <Compile Include="DataSources\MessagesDataSource.cs" />
+    <Compile Include="Extensions\UIButtonExtensions.cs" />
     <Compile Include="Extensions\UIViewExtensions.cs" />
     <Compile Include="Linker\LinkerPleaseInclude.cs" />
     <Compile Include="Main.cs" />
@@ -167,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <InterfaceDefinition Include="TestScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\launch_image.png" />

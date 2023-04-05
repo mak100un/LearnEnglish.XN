@@ -13,20 +13,17 @@ public abstract class BaseViewController<TViewModel> : MvxViewController<TViewMo
         base.ViewDidLoad();
 
         View.BackgroundColor = UIColor.White;
-        NavigationController.Title = "LearnEnglish.XN";
-        NavigationController.HidesBarsOnSwipe = true;
-        NavigationController.NavigationItem.BackButtonTitle = "Back";
+        NavigationItem.Title = "LearnEnglish.XN";
+        NavigationItem.BackButtonTitle = "Back";
         NavigationController.NavigationBar.BarStyle = UIBarStyle.Default;
         NavigationController.NavigationBar.TitleTextAttributes = new UIStringAttributes
         {
             ForegroundColor = UIColor.Black,
         };
-        NavigationController.NavigationBar.Translucent = false;
-        NavigationController.NavigationBar.ShadowImage = null;
-        NavigationController.NavigationBar.Hidden = false;
-        NavigationController.NavigationBar.BarTintColor = UIColor.White;
+
+        NavigationController.NavigationBar.BackgroundColor = UIColor.White;
         NavigationController.NavigationBar.TintColor = UIColor.Black;
-        NavigationController.SetNeedsStatusBarAppearanceUpdate();
+
         CreateView();
         LayoutView();
         BindView();

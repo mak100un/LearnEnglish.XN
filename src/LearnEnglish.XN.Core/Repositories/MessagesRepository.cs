@@ -15,7 +15,6 @@ public class MessagesRepository : IMessagesRepository
 
     public MessagesRepository(SQLiteAsyncConnection db) => _db = db;
 
-
     public Task InsertAsync(MessageDalModel message) => WrapWithDbCreationCheck(() => _db.InsertAsync(message));
 
     public async Task<IEnumerable<MessageDalModel>> GetItemsAsync(int fetch, int limit) => await WrapWithDbCreationCheck(() => _db.Table<MessageDalModel>().OrderByDescending(m => m.Id).Skip(fetch).Take(limit).ToArrayAsync());
