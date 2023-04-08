@@ -10,8 +10,7 @@ public class PrimaryButton : UIButton
         set
         {
             base.Enabled = value;
-            Alpha = !value ? 0.7f : 1f;
-            BackgroundColor = UIColor.White;
+            Alpha = !value ? 0.8f : 1f;
         }
     }
 }
