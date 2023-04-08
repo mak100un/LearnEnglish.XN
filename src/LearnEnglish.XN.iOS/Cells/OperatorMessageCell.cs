@@ -1,4 +1,3 @@
-using System;
 using Cirrious.FluentLayouts.Touch;
 using CoreGraphics;
 using Foundation;
@@ -19,7 +18,6 @@ public class OperatorMessageCell : BaseMessageCell
 
     private void InitCell()
     {
-        BackgroundColor = UIColor.Red;
         var label = new UILabel
         {
             TextAlignment = UITextAlignment.Center,

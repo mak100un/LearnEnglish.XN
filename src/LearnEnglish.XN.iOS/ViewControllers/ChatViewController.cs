@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cirrious.FluentLayouts.Touch;
 using CoreGraphics;
 using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.ViewModels;
@@ -31,10 +32,13 @@ public class ChatViewController : BaseViewController<ChatViewModel>
     {
         base.CreateView();
 
-        var config = new UICollectionLayoutListConfiguration(UICollectionLayoutListAppearance.Plain);
-        var layout = UICollectionViewCompositionalLayout.GetLayout(config);
-        View.Add(_collectionView = new UICollectionView(CGRect.Empty, layout));
-        _collectionView.ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Always;
+        View.Add(_collectionView = new UICollectionView(CGRect.Empty, new UICollectionViewFlowLayout
+        {
+            ScrollDirection = UICollectionViewScrollDirection.Vertical,
+            EstimatedItemSize = UICollectionViewFlowLayout.AutomaticSize,
+            MinimumLineSpacing = 0,
+            MinimumInteritemSpacing = 0,
+        }));
         _collectionView.BackgroundView = new UIImageView
         {
             Image = new UIImage("background_img.jpeg"),
@@ -46,7 +50,7 @@ public class ChatViewController : BaseViewController<ChatViewModel>
             _collectionView.RegisterClassForCell(messageCell.Value, messageCell.Key);
         }
         _collectionView.DataSource = (_dataSource = new MessagesDataSource(_collectionView));
-        _collectionView.Delegate = (_flowDelegateLayout = new MessagesFlowDelegateLayout(_collectionView));
+        _collectionView.Delegate = (_flowDelegateLayout = new MessagesFlowDelegateLayout());
     }
 
     protected override void BindView()

@@ -10,7 +10,7 @@ public static class UIButtonExtensions
         buttonConfig.TitleAlignment = UIButtonConfigurationTitleAlignment.Center;
         buttonConfig.BaseBackgroundColor = UIColor.White;
         buttonConfig.BaseForegroundColor = UIColor.Black;
-        buttonConfig.ContentInsets = new NSDirectionalEdgeInsets(6, 16, 6, 16);
+        buttonConfig.ContentInsets = new NSDirectionalEdgeInsets(10, 20, 10, 20);
         var button = new UIButton
         {
             HorizontalAlignment = UIControlContentHorizontalAlignment.Center,

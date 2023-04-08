@@ -1,4 +1,3 @@
-using System;
 using Cirrious.FluentLayouts.Touch;
 using CoreGraphics;
 using Foundation;

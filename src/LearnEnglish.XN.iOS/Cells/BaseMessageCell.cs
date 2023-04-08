@@ -8,18 +8,11 @@ using UIKit;
 
 namespace LearnEnglish.XN.iOS.Cells;
 
-public abstract class BaseMessageCell : UICollectionViewCell, IMvxBindingContextOwner
+public abstract class BaseMessageCell : BaseCollectionViewCell, IMvxBindingContextOwner
 {
-    public override CGSize SystemLayoutSizeFittingSize(CGSize size) => ContentView.SystemLayoutSizeFittingSize(new CGSize(UIScreen.MainScreen.Bounds.Width, 1));
-
-
     [Export("initWithFrame:")]
     protected BaseMessageCell(CGRect frame)
-        : base(frame)
-    {
-        this.CreateBindingContext();
-        BackgroundColor = UIColor.Green;
-    }
+        : base(frame) => this.CreateBindingContext();
 
     public IMvxBindingContext BindingContext { get; set; }
 

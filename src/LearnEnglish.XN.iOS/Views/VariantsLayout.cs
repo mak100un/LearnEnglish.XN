@@ -84,8 +84,9 @@ public class VariantsLayout : UIStackView, IMvxBindingContextOwner, INotifyPrope
             horizontalStack ??= CreateHorizontalStack();
 
             var button = UIButtonExtensions.CreateUIButton(variant.Text);
+            button.SizeToFit();
 
-            if (MaxWidth >= horizontalStack.Frame.Width + button.Frame.Width + horizontalStack.Spacing)
+            if (MaxWidth >= horizontalStack.SystemLayoutSizeFittingSize(UILayoutFittingCompressedSize).Width + button.Frame.Width + horizontalStack.Spacing)
             {
                 horizontalStack.AddArrangedSubview(button);
             }

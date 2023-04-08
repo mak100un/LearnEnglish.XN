@@ -1,34 +1,51 @@
 using Cirrious.FluentLayouts.Touch;
+using CoreFoundation;
 using CoreGraphics;
 using Foundation;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.Cells;
 
-public class LoaderCell : UICollectionViewCell
+public class LoaderCell : BaseCollectionViewCell
 {
+    private UIActivityIndicatorView _indicator;
+
     [Export("initWithFrame:")]
     public LoaderCell(CGRect frame)
         : base(frame)
     {
-        BackgroundColor = UIColor.Clear;
         InitCell();
     }
 
     private void InitCell()
     {
-        var indicator = new UIActivityIndicatorView { Color = UIColor.White };
-        ContentView.Add(indicator);
+        _indicator = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.Medium)
+        {
+            Color = UIColor.White,
+            HidesWhenStopped = false,
+        };
+        Add(_indicator);
+
+        StartAnimating();
 
         NSLayoutConstraint.ActivateConstraints(new []
         {
             // indicator
-            indicator.LeadingAnchor.ConstraintEqualTo(ContentView.LeadingAnchor),
-            indicator.TrailingAnchor.ConstraintEqualTo(ContentView.TrailingAnchor),
-            indicator.TopAnchor.ConstraintEqualTo(ContentView.TopAnchor, 16),
-            indicator.BottomAnchor.ConstraintEqualTo(ContentView.BottomAnchor, -8),
+            _indicator.LeadingAnchor.ConstraintEqualTo(LeadingAnchor),
+            _indicator.TrailingAnchor.ConstraintEqualTo(TrailingAnchor),
+            _indicator.TopAnchor.ConstraintEqualTo(TopAnchor, 16),
+            _indicator.BottomAnchor.ConstraintEqualTo(BottomAnchor, -8),
         });
 
-        ContentView.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
+        this.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
+    }
+
+    public void StartAnimating() => DispatchQueue.MainQueue.DispatchAsync(() => _indicator?.StartAnimating());
+
+    protected override void Dispose(bool disposing)
+    {
+        _indicator?.Dispose();
+        _indicator = null;
+        base.Dispose(disposing);
     }
 }

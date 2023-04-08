@@ -1,4 +1,3 @@
-using System;
 using Cirrious.FluentLayouts.Touch;
 using CoreGraphics;
 using Foundation;
@@ -41,7 +40,7 @@ public class OperatorMessageWithVariantsCell : BaseMessageCell
 
         var variantsLayout = new VariantsLayout
         {
-            MaxWidth = Bounds.Width - 100f - 16f,
+            MaxWidth = UIScreen.MainScreen.Bounds.Width - 100f - 16f,
         };
 
         Add(variantsLayout);

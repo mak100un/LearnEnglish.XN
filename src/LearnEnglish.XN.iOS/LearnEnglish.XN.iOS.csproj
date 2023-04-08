@@ -75,6 +75,7 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Cells\BaseCollectionViewCell.cs" />
     <Compile Include="Cells\BaseMessageCell.cs" />
     <Compile Include="Cells\LoaderCell.cs" />
     <Compile Include="Cells\MyMessageCell.cs" />
@@ -94,7 +95,6 @@
     <Compile Include="ViewControllers\LaunchViewController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewLayouts\MessagesFlowDelegateLayout.cs" />
-    <Compile Include="ViewLayouts\MessagesFlowLayout.cs" />
     <Compile Include="Views\VariantsLayout.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />
