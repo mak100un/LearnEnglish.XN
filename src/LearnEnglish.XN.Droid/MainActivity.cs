@@ -6,9 +6,6 @@ using Android.Views;
 using Android.Widget;
 using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.ViewModels;
-using MvvmCross;
-using MvvmCross.IoC;
-using MvvmCross.Navigation;
 using MvvmCross.Platforms.Android.Presenters.Attributes;
 using MvvmCross.Platforms.Android.Views;
 
@@ -49,6 +46,9 @@ namespace LearnEnglish.XN.Droid
             base.OnDestroy();
         }
 
-        private void OnNavigationClick(object sender, EventArgs e) => Mvx.IoCProvider.Resolve<IMvxNavigationService>().Close(ViewModel);
+        private void OnNavigationClick(object sender, EventArgs e)
+        {
+            OnBackPressed();
+        }
     }
 }

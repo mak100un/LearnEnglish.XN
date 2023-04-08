@@ -87,11 +87,20 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         {
             case NotifyCollectionChangedAction.Add:
                 {
-                    switch (ItemCount)
+                    switch (ItemCount - args.NewItems?.Count)
                     {
+                        case > 0 when args.NewStartingIndex == 0 && args.NewItems?.Count == 1:
+                            {
+                                CollectionView.ScrollEnabled = false;
+                                Add(args);
+                                DispatchQueue.MainQueue.DispatchAsync(() => CollectionView.ScrollEnabled = true);
+
+                                return;
+                            }
                         // Pagination
                         case > 0 when args.NewStartingIndex == 0:
                             {
+                                CollectionView.ScrollEnabled = false;
                                 var bottomOffset = CollectionView.ContentSize.Height - CollectionView.ContentOffset.Y;
 
                                 CATransaction.Begin();
@@ -99,27 +108,31 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
 
                                 Add(args);
 
-                                DispatchQueue.MainQueue.DispatchAsync(async () =>
+                                DispatchQueue.MainQueue.DispatchAsync(() =>
                                 {
                                     if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height)
                                     {
                                         CATransaction.Commit();
+                                        CollectionView.ScrollEnabled = true;
                                         return;
                                     }
 
                                     CollectionView.ContentOffset = new CGPoint(0, CollectionView.ContentSize.Height - bottomOffset);
                                     CATransaction.Commit();
+                                    CollectionView.ScrollEnabled = true;
                                 });
 
                                 return;
                             }
                     }
+                    CollectionView.ScrollEnabled = false;
                     Add(args);
-                    DispatchQueue.MainQueue.DispatchAsync(async () =>
+                    DispatchQueue.MainQueue.DispatchAsync(() =>
                     {
                         if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height
                             || !(LastVisibleItem() >= ItemCount - 3))
                         {
+                            CollectionView.ScrollEnabled = true;
                             return;
                         }
 
@@ -129,7 +142,9 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
                     break;
                 }
             case NotifyCollectionChangedAction.Remove:
+                CollectionView.ScrollEnabled = false;
                 Remove(args);
+                DispatchQueue.MainQueue.DispatchAsync(() => CollectionView.ScrollEnabled = true);
                 break;
             case NotifyCollectionChangedAction.Replace:
                 Replace(args);
@@ -237,6 +252,7 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
 
         if (lastItem < 0)
         {
+            CollectionView.ScrollEnabled = true;
             return;
         }
 

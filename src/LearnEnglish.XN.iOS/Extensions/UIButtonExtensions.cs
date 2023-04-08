@@ -1,3 +1,4 @@
+using LearnEnglish.XN.iOS.Views;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.Extensions;
@@ -11,7 +12,7 @@ public static class UIButtonExtensions
         buttonConfig.BaseBackgroundColor = UIColor.White;
         buttonConfig.BaseForegroundColor = UIColor.Black;
         buttonConfig.ContentInsets = new NSDirectionalEdgeInsets(10, 20, 10, 20);
-        var button = new UIButton
+        var button = new PrimaryButton
         {
             HorizontalAlignment = UIControlContentHorizontalAlignment.Center,
             Configuration = buttonConfig,

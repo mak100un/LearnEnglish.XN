@@ -3,21 +3,20 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Foundation;
 using LearnEnglish.XN.Core.Services.Interfaces;
+using LearnEnglish.XN.iOS.Extensions;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.Services
 {
     public class DialogService : IDialogService
     {
-        public Task<string> DisplayInputAsync(string title, string message, string previousText, string accept, string cancel)
+        public async Task<string> DisplayInputAsync(string title, string message, string previousText, string accept, string cancel)
         {
             var tcs = new TaskCompletionSource<string>();
 
-            var currentViewController = GetPresentedViewController(UIApplication.SharedApplication.KeyWindow.RootViewController);
+            var currentViewController = UIApplication.SharedApplication.KeyWindow.RootViewController.GetPresentedViewController();
 
             var alert = UIAlertController.Create(title, message, UIAlertControllerStyle.Alert);
-            alert.View.Superview.UserInteractionEnabled = true;
-            alert.View.Superview.AddGestureRecognizer(new UITapGestureRecognizer(Dispose));
             alert.AddTextField(uiTextField =>
             {
                 uiTextField.Placeholder = "Введите текст";
@@ -33,16 +32,20 @@ namespace LearnEnglish.XN.iOS.Services
                 Dispose();
             }));
 
-            alert.AddAction(UIAlertAction.Create(accept, UIAlertActionStyle.Default,
-            a =>
+            var cancelAction = () =>
             {
                 tcs.TrySetResult(alert.TextFields[0].Text);
                 Dispose();
-            }));
+            };
 
-            currentViewController.PresentViewController(alert, true, null);
+            alert.AddAction(UIAlertAction.Create(accept, UIAlertActionStyle.Default,
+            a => cancelAction()));
 
-            return tcs.Task;
+            await currentViewController.PresentViewControllerAsync(alert, true);
+            alert.View.Superview.UserInteractionEnabled = true;
+            alert.View.Superview.AddGestureRecognizer(new UITapGestureRecognizer(cancelAction));
+
+            return await tcs.Task;
 
             void Dispose()
             {
@@ -89,13 +92,5 @@ namespace LearnEnglish.XN.iOS.Services
                 alert = null;
             }
         }
-
-        private UIViewController GetPresentedViewController(UIViewController viewController) =>
-            viewController switch
-            {
-                UINavigationController navigationController => GetPresentedViewController(navigationController.VisibleViewController),
-                not null when viewController.PresentedViewController != null => GetPresentedViewController(viewController.PresentedViewController),
-                _ => viewController
-            };
     }
 }

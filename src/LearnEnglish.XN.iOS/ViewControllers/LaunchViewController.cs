@@ -25,10 +25,38 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
     private UIStackView _stack;
     private UIButton _chatButton, _userNameButton;
 
+    public void PauseMusic() => _player?.Pause();
+
+    public void PlayMusic()
+    {
+        try
+        {
+            if (_player == null)
+            {
+                var url = NibBundle?.GetUrlForResource("new_year", "mp3");
+                AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
+                AVAudioSession.SharedInstance().SetActive(true);
+                _player = AVAudioPlayer.FromUrl(url);
+                _player.NumberOfLoops = -1;
+            }
+            _player?.Play();
+        }
+        catch (Exception e)
+        {
+            ViewModel.Logger.LogError(e, e.Message);
+        }
+    }
+
     public override void ViewDidDisappear(bool animated)
     {
         base.ViewDidDisappear(animated);
-        _player?.Pause();
+        PauseMusic();
+    }
+
+    public override void ViewDidAppear(bool animated)
+    {
+        base.ViewDidAppear(animated);
+        PlayMusic();
     }
 
     protected override void CreateView()
@@ -140,23 +168,6 @@ public class LaunchViewController : BaseViewController<LaunchViewModel>
             .To(vm => vm.UserName);
 
         set.Apply();
-
-        try
-        {
-            if (_player == null)
-            {
-                var url = NibBundle?.GetUrlForResource("new_year", "mp3");
-                AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
-                AVAudioSession.SharedInstance().SetActive(true);
-                _player = AVAudioPlayer.FromUrl(url);
-                _player.NumberOfLoops = -1;
-            }
-           // _player?.Play();
-        }
-        catch (Exception e)
-        {
-            ViewModel.Logger.LogError(e, e.Message);
-        }
     }
 
     protected override void Dispose(bool disposing)
