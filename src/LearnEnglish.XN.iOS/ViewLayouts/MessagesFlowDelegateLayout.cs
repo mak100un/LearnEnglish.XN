@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using LearnEnglish.XN.iOS.Views;
 using UIKit;
 
 namespace LearnEnglish.XN.iOS.ViewLayouts;
@@ -13,7 +14,9 @@ public class MessagesFlowDelegateLayout : UICollectionViewDelegateFlowLayout, IN
 
     public override void Scrolled(UIScrollView scrollView)
     {
-        if (scrollView is not UICollectionView collectionView
+        if (!scrollView.ScrollEnabled
+            || scrollView.ContentSize.Height <= scrollView.Bounds.Height
+            || scrollView is not UICollectionView collectionView
             || collectionView.IndexPathsForVisibleItems?.Any() != true
             || collectionView.IndexPathsForVisibleItems.OrderBy(index => index.Row).FirstOrDefault()?.Row > LoadingOffset)
         {
@@ -22,6 +25,8 @@ public class MessagesFlowDelegateLayout : UICollectionViewDelegateFlowLayout, IN
 
         LoadMoreCommand?.Execute(null);
     }
+
+    public override void ScrollAnimationEnded(UIScrollView scrollView) => (scrollView as MessagesCollectionView)?.ScrollAnimationEnd();
 
     public event PropertyChangedEventHandler PropertyChanged;
 }

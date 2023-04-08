@@ -6,12 +6,16 @@ using Android.Views;
 using Android.Widget;
 using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.Services.Interfaces;
+using MvvmCross.Platforms.Android;
 using Xamarin.Essentials;
 
 namespace LearnEnglish.XN.Droid.Services;
 
 public class DialogService : IDialogService
 {
+    private readonly IMvxAndroidCurrentTopActivity _topActivity;
+    public DialogService(IMvxAndroidCurrentTopActivity topActivity) => _topActivity = topActivity;
+
     public Task<string> DisplayInputAsync(string title, string text, string previousText, string accept, string cancel)
     {
         var alertDialog = new AlertDialog.Builder(Platform.CurrentActivity)
@@ -28,7 +32,8 @@ public class DialogService : IDialogService
 
         var frameLayout = new FrameLayout(Platform.CurrentActivity);
 
-        var margin = (int)(22 * Platform.CurrentActivity.Resources.DisplayMetrics.Density);
+
+        var margin = (int)(22 * _topActivity.Activity.Resources.DisplayMetrics.Density);
         using var layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent)
         {
             LeftMargin = margin,

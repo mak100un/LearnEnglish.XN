@@ -7,11 +7,6 @@ namespace LearnEnglish.XN.Droid.ViewHolder;
 
 public class LoadingViewHolder : RecyclerView.ViewHolder
 {
-    public LoadingViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
-        : base(javaReference, transfer)
-    {
-    }
-
     public LoadingViewHolder(View itemView)
         : base(itemView)
     {

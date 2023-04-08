@@ -8,7 +8,6 @@ using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.ViewModels.Items;
 using LearnEnglish.XN.Droid.ViewHolder;
-using MvvmCross.Binding.BindingContext;
 using MvvmCross.Platforms.Android.Binding.BindingContext;
 using PropertyChanged;
 using Swordfish.NET.Collections;
@@ -46,42 +45,6 @@ public class MessagesAdapter :  RecyclerView.Adapter, INotifyPropertyChanged
         }
 
         viewHolder.DataContext = message;
-
-        var set = viewHolder.CreateBindingSet<BaseMessageViewHolder, MessageViewModel>();
-        switch (holder)
-        {
-            case OperatorMessageViewHolder operatorMessageViewHolder:
-
-                set.Bind(operatorMessageViewHolder.OperatorMessageTextView)
-                    .For(x => x.Text)
-                    .To(vm => vm.Text);
-
-                break;
-            case OperatorMessageWithVariantsViewHolder operatorMessageWithVariantsViewHolder:
-
-                set.Bind(operatorMessageWithVariantsViewHolder.OperatorMessageWithVariantsTextView)
-                    .For(x => x.Text)
-                    .To(vm => vm.Text);
-
-                set.Bind(operatorMessageWithVariantsViewHolder.VariantsLayout)
-                    .For(x => x.DataContext)
-                    .To(vm => vm);
-
-                set.Bind(operatorMessageWithVariantsViewHolder.VariantsLayout)
-                    .For(x => x.Variants)
-                    .To(vm => vm.Variants);
-
-                break;
-            case MyMessageViewHolder myMessageViewHolder:
-
-                set.Bind(myMessageViewHolder.MyMessageTextView)
-                    .For(x => x.Text)
-                    .To(vm => vm.Text);
-
-                break;
-        }
-
-        set.Apply();
     }
 
     public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)

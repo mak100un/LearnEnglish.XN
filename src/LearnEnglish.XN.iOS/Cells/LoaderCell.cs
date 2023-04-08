@@ -23,6 +23,7 @@ public class LoaderCell : BaseCollectionViewCell
         {
             Color = UIColor.White,
             HidesWhenStopped = false,
+            Transform = CGAffineTransform.MakeScale(1.5f, 1.5f)
         };
         Add(_indicator);
 

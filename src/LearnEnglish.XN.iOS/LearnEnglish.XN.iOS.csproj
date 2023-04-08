@@ -95,6 +95,7 @@
     <Compile Include="ViewControllers\LaunchViewController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewLayouts\MessagesFlowDelegateLayout.cs" />
+    <Compile Include="Views\MessagesCollectionView.cs" />
     <Compile Include="Views\VariantsLayout.cs" />
     <ITunesArtwork Include="iTunesArtwork" />
     <ITunesArtwork Include="iTunesArtwork%402x" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using CoreAnimation;
 using CoreFoundation;
 using CoreGraphics;
 using Foundation;
@@ -10,6 +11,7 @@ using LearnEnglish.XN.Core.Definitions.Enums;
 using LearnEnglish.XN.Core.Definitions.Extensions;
 using LearnEnglish.XN.Core.ViewModels.Items;
 using LearnEnglish.XN.iOS.Cells;
+using LearnEnglish.XN.iOS.Views;
 using PropertyChanged;
 using Swordfish.NET.Collections;
 using UIKit;
@@ -23,12 +25,12 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
             .Cast<MessageTypes>()
             .ToDictionary(type => type, type => type.ToString());
 
-    public MessagesDataSource(UICollectionView collectionView)
+    public MessagesDataSource(MessagesCollectionView collectionView)
     {
         CollectionView = collectionView;
     }
 
-    public UICollectionView CollectionView { get; }
+    public MessagesCollectionView CollectionView { get; }
 
     [OnChangedMethod(nameof(OnMessagesChanged))]
     public ConcurrentObservableCollection<MessageViewModel> Messages { get; set; }
@@ -55,6 +57,7 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         return cell switch
         {
             BaseMessageCell messageCell => GetMessageCell(messageCell),
+            LoaderCell loaderCell => GetLoaderCell(loaderCell),
             _ => cell as UICollectionViewCell,
         };
 
@@ -63,6 +66,13 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
             messageCell.DataContext = message;
             return messageCell;
         }
+
+        static LoaderCell GetLoaderCell(LoaderCell loaderCell)
+        {
+            loaderCell.StartAnimating();
+            return loaderCell;
+        }
+
     }
 
     private void OnMessagesChanged(object oldValue, object newValue)
@@ -75,32 +85,46 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
     {
         switch (args.Action)
         {
-            case NotifyCollectionChangedAction.Add when args.NewItems?.Count == 1:
-                {
-                    Add(args);
-
-                    DispatchQueue.MainQueue.DispatchAsync(() =>
-                    {
-                        if (args.NewStartingIndex != 0 && LastVisibleItem() >= ItemCount - 3)
-                        {
-                            CollectionView.ScrollToItem(NSIndexPath.FromRowSection((Messages?.Count - 1) ?? 0, 0), UICollectionViewScrollPosition.Bottom, true);
-                        }
-                    });
-
-                    break;
-                }
             case NotifyCollectionChangedAction.Add:
                 {
-                    Add(args);
-                    DispatchQueue.MainQueue.DispatchAsync(() =>
+                    switch (ItemCount)
                     {
-                        if (LastVisibleItem() >= ItemCount - 3)
-                        {
-                            CollectionView.ScrollToItem(NSIndexPath.FromRowSection((Messages?.Count - 1) ?? 0, 0),
-                                UICollectionViewScrollPosition.Bottom, true);
-                        }
-                    });
+                        // Pagination
+                        case > 0 when args.NewStartingIndex == 0:
+                            {
+                                var bottomOffset = CollectionView.ContentSize.Height - CollectionView.ContentOffset.Y;
 
+                                CATransaction.Begin();
+                                CATransaction.DisableActions = true;
+
+                                Add(args);
+
+                                DispatchQueue.MainQueue.DispatchAsync(async () =>
+                                {
+                                    if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height)
+                                    {
+                                        CATransaction.Commit();
+                                        return;
+                                    }
+
+                                    CollectionView.ContentOffset = new CGPoint(0, CollectionView.ContentSize.Height - bottomOffset);
+                                    CATransaction.Commit();
+                                });
+
+                                return;
+                            }
+                    }
+                    Add(args);
+                    DispatchQueue.MainQueue.DispatchAsync(async () =>
+                    {
+                        if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height
+                            || !(LastVisibleItem() >= ItemCount - 3))
+                        {
+                            return;
+                        }
+
+                        ScrollToBottomAsync();
+                    });
 
                     break;
                 }
@@ -120,7 +144,7 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
                 throw new ArgumentOutOfRangeException();
         }
 
-        int? LastVisibleItem() => CollectionView?.IndexPathsForVisibleItems.OrderBy(index => index.Row).LastOrDefault()?.Row;
+        int? LastVisibleItem() => CollectionView?.IndexPathsForVisibleItems?.OrderBy(index => index.Row).LastOrDefault()?.Row;
     }
 
     protected override void Dispose(bool disposing)
@@ -205,5 +229,17 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         }
 
         return result;
+    }
+
+    private async void ScrollToBottomAsync()
+    {
+        var lastItem = CollectionView.NumberOfItemsInSection(0) - 1;
+
+        if (lastItem < 0)
+        {
+            return;
+        }
+
+        await CollectionView.ScrollToItemAsync(NSIndexPath.FromRowSection(lastItem, 0), UICollectionViewScrollPosition.Bottom, true);
     }
 }

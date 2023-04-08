@@ -7,6 +7,7 @@ using LearnEnglish.XN.Core.ViewModels;
 using LearnEnglish.XN.iOS.Cells;
 using LearnEnglish.XN.iOS.DataSources;
 using LearnEnglish.XN.iOS.ViewLayouts;
+using LearnEnglish.XN.iOS.Views;
 using MvvmCross.Binding.BindingContext;
 using MvvmCross.Platforms.Ios.Presenters.Attributes;
 using UIKit;
@@ -24,7 +25,7 @@ public class ChatViewController : BaseViewController<ChatViewModel>
         [nameof(MessageTypes.OperatorWithVariants)] = typeof(OperatorMessageWithVariantsCell),
     };
 
-    private UICollectionView _collectionView;
+    private MessagesCollectionView _collectionView;
     private MessagesDataSource _dataSource;
     private MessagesFlowDelegateLayout _flowDelegateLayout;
 
@@ -32,13 +33,17 @@ public class ChatViewController : BaseViewController<ChatViewModel>
     {
         base.CreateView();
 
-        View.Add(_collectionView = new UICollectionView(CGRect.Empty, new UICollectionViewFlowLayout
+        using var config = new UICollectionLayoutListConfiguration(UICollectionLayoutListAppearance.Plain)
         {
-            ScrollDirection = UICollectionViewScrollDirection.Vertical,
-            EstimatedItemSize = UICollectionViewFlowLayout.AutomaticSize,
-            MinimumLineSpacing = 0,
-            MinimumInteritemSpacing = 0,
-        }));
+            ShowsSeparators = false,
+            BackgroundColor = UIColor.Clear,
+        };
+        using var layout = UICollectionViewCompositionalLayout.GetLayout(config);
+        View.Add(_collectionView = new MessagesCollectionView(CGRect.Empty, layout)
+        {
+            ScrollsToTop = false,
+        });
+        _collectionView.AutoresizingMask = UIViewAutoresizing.All;
         _collectionView.BackgroundView = new UIImageView
         {
             Image = new UIImage("background_img.jpeg"),

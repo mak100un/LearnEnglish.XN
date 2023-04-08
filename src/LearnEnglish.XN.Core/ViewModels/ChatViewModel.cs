@@ -222,7 +222,7 @@ public class ChatViewModel : BaseViewModel
             var lastMessage = messages.Last();
             Messages.InsertRange(0, messages);
 
-            if (!lastMessage.IsMine)
+            if (!lastMessage.IsMine && lastMessage.MessageType == MessageTypes.OperatorWithVariants)
             {
                 lastMessage.SelectVariantCommand = _selectVariantCommand;
                 return;
@@ -247,9 +247,9 @@ public class ChatViewModel : BaseViewModel
         }
     });
 
-    private Task AddMessageAsync(MessageViewModel message)
+    private async Task AddMessageAsync(MessageViewModel message)
     {
+        await _messagesRepository.InsertAsync(_mapper.Map<MessageDalModel>(message));
         Messages.Add(message);
-        return _messagesRepository.InsertAsync(_mapper.Map<MessageDalModel>(message));
     }
 }

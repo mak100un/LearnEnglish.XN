@@ -22,11 +22,6 @@ namespace LearnEnglish.XN.Droid.Widgets;
 
 public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPropertyChanged
 {
-    protected VariantsLayout(IntPtr javaReference, JniHandleOwnership transfer)
-        : base(javaReference, transfer)
-    {
-    }
-
     public VariantsLayout(Context context)
         : base(context)
     {
@@ -37,11 +32,6 @@ public class VariantsLayout : FlexboxLayout, IMvxBindingContextOwner, INotifyPro
         : base(context, attrs)
     {
         this.CreateBindingContext();
-    }
-
-    public VariantsLayout(Context context, IAttributeSet attrs, int defStyleAttr)
-        : base(context, attrs, defStyleAttr)
-    {
     }
 
     [MvxSetToNullAfterBinding]

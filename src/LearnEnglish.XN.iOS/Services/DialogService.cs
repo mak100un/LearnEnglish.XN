@@ -13,17 +13,11 @@ namespace LearnEnglish.XN.iOS.Services
         {
             var tcs = new TaskCompletionSource<string>();
 
-            var window = new UIWindow
-            {
-                BackgroundColor = UIColor.Clear,
-                RootViewController = new UIViewController(),
-                WindowLevel = UIWindowLevel.Alert + 1,
-            };
-
-            window.RootViewController.View.BackgroundColor = UIColor.Clear;
-            window.MakeKeyAndVisible();
+            var currentViewController = GetPresentedViewController(UIApplication.SharedApplication.KeyWindow.RootViewController);
 
             var alert = UIAlertController.Create(title, message, UIAlertControllerStyle.Alert);
+            alert.View.Superview.UserInteractionEnabled = true;
+            alert.View.Superview.AddGestureRecognizer(new UITapGestureRecognizer(Dispose));
             alert.AddTextField(uiTextField =>
             {
                 uiTextField.Placeholder = "Введите текст";
@@ -33,10 +27,8 @@ namespace LearnEnglish.XN.iOS.Services
             var oldFrame = alert.View.Frame;
             alert.View.Frame = new RectangleF((float)oldFrame.X, (float)oldFrame.Y, (float)oldFrame.Width, (float)oldFrame.Height - 10 * 2);
 
-            alert.AddAction(UIAlertAction.Create(cancel, UIAlertActionStyle.Cancel,
-            a =>
+            alert.AddAction(UIAlertAction.Create(cancel, UIAlertActionStyle.Cancel, a =>
             {
-                window.Hidden = true;
                 tcs.TrySetResult(null);
                 Dispose();
             }));
@@ -44,23 +36,17 @@ namespace LearnEnglish.XN.iOS.Services
             alert.AddAction(UIAlertAction.Create(accept, UIAlertActionStyle.Default,
             a =>
             {
-                window.Hidden = true;
                 tcs.TrySetResult(alert.TextFields[0].Text);
                 Dispose();
             }));
 
-            if(!UIDevice.CurrentDevice.CheckSystemVersion(9,0))
-            {
-                // For iOS 8, we need to explicitly set the size of the window
-                window.Frame = new RectangleF(0, 0, (float)UIScreen.MainScreen.Bounds.Width, (float)UIScreen.MainScreen.Bounds.Height);
-            }
-
-            window.RootViewController.PresentViewController(alert, true, null);
+            currentViewController.PresentViewController(alert, true, null);
 
             return tcs.Task;
 
             void Dispose()
             {
+                alert?.DismissViewController(true, null);
                 alert?.Dispose();
                 alert = null;
             }
@@ -103,5 +89,13 @@ namespace LearnEnglish.XN.iOS.Services
                 alert = null;
             }
         }
+
+        private UIViewController GetPresentedViewController(UIViewController viewController) =>
+            viewController switch
+            {
+                UINavigationController navigationController => GetPresentedViewController(navigationController.VisibleViewController),
+                not null when viewController.PresentedViewController != null => GetPresentedViewController(viewController.PresentedViewController),
+                _ => viewController
+            };
     }
 }
