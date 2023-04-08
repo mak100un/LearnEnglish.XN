@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
+using CoreAnimation;
 using CoreFoundation;
 using CoreGraphics;
 using Foundation;
@@ -55,6 +57,7 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         return cell switch
         {
             BaseMessageCell messageCell => GetMessageCell(messageCell),
+            LoaderCell loaderCell => GetLoaderCell(loaderCell),
             _ => cell as UICollectionViewCell,
         };
 
@@ -62,6 +65,12 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         {
             messageCell.DataContext = message;
             return messageCell;
+        }
+
+        static LoaderCell GetLoaderCell(LoaderCell loaderCell)
+        {
+            loaderCell.StartAnimating();
+            return loaderCell;
         }
     }
 
@@ -71,13 +80,13 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         (newValue as ConcurrentObservableCollection<MessageViewModel>)?.Then(value => value.CollectionChanged += OnCollectionChanged);
     }
 
-    private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+    private async void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
     {
         switch (args.Action)
         {
             case NotifyCollectionChangedAction.Add when args.NewItems?.Count == 1:
                 {
-                    Add(args);
+                    await AddAsync(args);
 
                     DispatchQueue.MainQueue.DispatchAsync(() =>
                     {
@@ -91,7 +100,7 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
                 }
             case NotifyCollectionChangedAction.Add:
                 {
-                    Add(args);
+                    await AddAsync(args);
                     DispatchQueue.MainQueue.DispatchAsync(() =>
                     {
                         if (LastVisibleItem() >= ItemCount - 3)
@@ -105,16 +114,16 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
                     break;
                 }
             case NotifyCollectionChangedAction.Remove:
-                Remove(args);
+                await RemoveAsync(args);
                 break;
             case NotifyCollectionChangedAction.Replace:
-                Replace(args);
+                await ReplaceAsync(args);
                 break;
             case NotifyCollectionChangedAction.Move:
-                Move(args);
+                await MoveAsync(args);
                 break;
             case NotifyCollectionChangedAction.Reset:
-                Reload();
+                await ReloadAsync();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -129,38 +138,50 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
         base.Dispose(disposing);
     }
 
-    private void Add(NotifyCollectionChangedEventArgs args)
-	{
-		Update(() => CollectionView.InsertItems(CreateIndexesFrom(args.NewStartingIndex, args.NewItems.Count)), args);
+    private Task AddAsync(NotifyCollectionChangedEventArgs args)
+    {
+		return UpdateAsync(async () =>
+        {
+            var bottomOffset = CollectionView.ContentSize.Height - CollectionView.ContentOffset.Y;
+
+            CATransaction.Begin();
+            CATransaction.DisableActions = true;
+
+            await CollectionView.PerformBatchUpdatesAsync(() =>
+            {
+                var indexPaths = CreateIndexesFrom(args.NewStartingIndex, args.NewItems.Count);
+                CollectionView.InsertItems(indexPaths);
+            });
+            CollectionView.ContentOffset = new CGPoint(0, CollectionView.ContentSize.Height - bottomOffset);
+            CATransaction.Commit();
+        });
 	}
 
-    private void Remove(NotifyCollectionChangedEventArgs args)
+    private Task RemoveAsync(NotifyCollectionChangedEventArgs args)
 	{
 		var startIndex = args.OldStartingIndex;
 
 		if (startIndex < 0)
 		{
-			Reload();
-			return;
+            return ReloadAsync();
 		}
 
-        Update(() => CollectionView.DeleteItems(CreateIndexesFrom(startIndex, args.OldItems.Count)), args);
+        return UpdateAsync(async () => CollectionView.DeleteItems(CreateIndexesFrom(startIndex, args.OldItems.Count)));
 	}
 
-	private void Replace(NotifyCollectionChangedEventArgs args)
+	private Task ReplaceAsync(NotifyCollectionChangedEventArgs args)
 	{
 		var newCount = args.NewItems.Count;
 
 		if (newCount == args.OldItems.Count)
 		{
-			Update(() => CollectionView.ReloadItems(CreateIndexesFrom(args.NewStartingIndex, newCount)), args);
-			return;
-		}
+            return UpdateAsync(async () => CollectionView.ReloadItems(CreateIndexesFrom(args.NewStartingIndex, newCount)));
+        }
 
-		Reload();
-	}
+        return ReloadAsync();
+    }
 
-    private void Move(NotifyCollectionChangedEventArgs args)
+    private Task MoveAsync(NotifyCollectionChangedEventArgs args)
 	{
 		var count = args.NewItems.Count;
 
@@ -169,30 +190,30 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
 			var oldPath = NSIndexPath.Create(0, args.OldStartingIndex);
 			var newPath = NSIndexPath.Create(0, args.NewStartingIndex);
 
-			Update(() => CollectionView.MoveItem(oldPath, newPath), args);
-			return;
+            return UpdateAsync(async() => CollectionView.MoveItem(oldPath, newPath));
 		}
 
 		var start = Math.Min(args.OldStartingIndex, args.NewStartingIndex);
 		var end = Math.Max(args.OldStartingIndex, args.NewStartingIndex) + count;
 
-		Update(() => CollectionView.ReloadItems(CreateIndexesFrom(start, end)), args);
+        return UpdateAsync(async() => CollectionView.ReloadItems(CreateIndexesFrom(start, end)));
 	}
 
-    private void Reload()
+    private Task ReloadAsync()
     {
         CollectionView.ReloadData();
         CollectionView.CollectionViewLayout.InvalidateLayout();
+        return Task.CompletedTask;
     }
 
-    private void Update(Action update, NotifyCollectionChangedEventArgs args)
+    private async Task UpdateAsync(Func<Task> updateAsync)
     {
         if (CollectionView?.Hidden != false)
         {
             return;
         }
 
-        update();
+        await updateAsync();
     }
 
     protected virtual NSIndexPath[] CreateIndexesFrom(int startIndex, int count)
