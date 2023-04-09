@@ -16,7 +16,17 @@ Video (Android):
 
 https://user-images.githubusercontent.com/44783367/213669437-d0228ffa-169e-4a23-9b76-95d3f3c2c246.mp4
 
+
 Screenshots (iOS):
+
+![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 13 31](https://user-images.githubusercontent.com/44783367/230750733-fa2bf451-c801-467e-a70c-e33c8156c537.png)
+
+![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 14 06](https://user-images.githubusercontent.com/44783367/230750740-f0f64bba-8c9f-4af8-9015-3d28aa380b1c.png)
+
+![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 14 19](https://user-images.githubusercontent.com/44783367/230750765-03c50764-b634-4e8e-a0ad-fbb784c970f9.png)
+
+![Uploading Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05.14.42.png…]()
+
 
 Video (iOS):
 
