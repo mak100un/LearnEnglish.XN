@@ -26,24 +26,18 @@ namespace LearnEnglish.XN.iOS.Services
             var oldFrame = alert.View.Frame;
             alert.View.Frame = new RectangleF((float)oldFrame.X, (float)oldFrame.Y, (float)oldFrame.Width, (float)oldFrame.Height - 10 * 2);
 
-            alert.AddAction(UIAlertAction.Create(cancel, UIAlertActionStyle.Cancel, a =>
-            {
-                tcs.TrySetResult(null);
-                Dispose();
-            }));
-
-            var cancelAction = () =>
-            {
-                tcs.TrySetResult(alert.TextFields[0].Text);
-                Dispose();
-            };
+            alert.AddAction(UIAlertAction.Create(cancel, UIAlertActionStyle.Cancel, a => CancelAction()));
 
             alert.AddAction(UIAlertAction.Create(accept, UIAlertActionStyle.Default,
-            a => cancelAction()));
+                a =>
+                {
+                    tcs.TrySetResult(alert.TextFields[0].Text);
+                    Dispose();
+                }));
 
             await currentViewController.PresentViewControllerAsync(alert, true);
             alert.View.Superview.UserInteractionEnabled = true;
-            alert.View.Superview.AddGestureRecognizer(new UITapGestureRecognizer(cancelAction));
+            alert.View.Superview.AddGestureRecognizer(new UITapGestureRecognizer((Action)CancelAction));
 
             return await tcs.Task;
 
@@ -52,6 +46,12 @@ namespace LearnEnglish.XN.iOS.Services
                 alert?.DismissViewController(true, null);
                 alert?.Dispose();
                 alert = null;
+            }
+
+            void CancelAction()
+            {
+                tcs.TrySetResult(null);
+                Dispose();
             }
         }
 

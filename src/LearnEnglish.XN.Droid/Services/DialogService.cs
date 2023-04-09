@@ -18,7 +18,7 @@ public class DialogService : IDialogService
 
     public Task<string> DisplayInputAsync(string title, string text, string previousText, string accept, string cancel)
     {
-        var alertDialog = new AlertDialog.Builder(Platform.CurrentActivity)
+        var alertDialog = new AlertDialog.Builder(_topActivity.Activity)
             .SetTitle(title)
             ?.SetMessage(text)
             ?.Create();
@@ -30,7 +30,7 @@ public class DialogService : IDialogService
 
         var tcs = new TaskCompletionSource<string>();
 
-        var frameLayout = new FrameLayout(Platform.CurrentActivity);
+        var frameLayout = new FrameLayout(_topActivity.Activity);
 
 
         var margin = (int)(22 * _topActivity.Activity.Resources.DisplayMetrics.Density);
@@ -40,7 +40,7 @@ public class DialogService : IDialogService
             RightMargin = margin
         };
 
-        var editText = new EditText(Platform.CurrentActivity)
+        var editText = new EditText(_topActivity.Activity)
         {
             Text = previousText,
             Hint = "Введите текст",
@@ -86,5 +86,5 @@ public class DialogService : IDialogService
 
     public Task DisplaySuccessMessageAsync() => Task.CompletedTask;
 
-    public void ShowToast(string text) => Toast.MakeText(Platform.CurrentActivity, text, ToastLength.Short)?.Show();
+    public void ShowToast(string text) => Toast.MakeText(_topActivity.Activity, text, ToastLength.Short)?.Show();
 }

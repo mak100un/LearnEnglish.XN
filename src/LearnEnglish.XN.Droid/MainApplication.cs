@@ -10,7 +10,7 @@ namespace LearnEnglish.XN.Droid
 #else
     [Application(Debuggable = false)]
 #endif
-        public class MainApplication : MvxAndroidApplication<Setup, App>
+    public class MainApplication : MvxAndroidApplication<Setup, App>
     {
         public MainApplication(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
         {
