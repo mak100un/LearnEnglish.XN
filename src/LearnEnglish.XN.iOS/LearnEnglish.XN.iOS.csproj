@@ -84,6 +84,7 @@
     <Compile Include="DataSources\MessagesDataSource.cs" />
     <Compile Include="Extensions\UIButtonExtensions.cs" />
     <Compile Include="Extensions\UIViewControllerExtensions.cs" />
+    <Compile Include="Extensions\UIViewExtensions.cs" />
     <Compile Include="Linker\LinkerPleaseInclude.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />

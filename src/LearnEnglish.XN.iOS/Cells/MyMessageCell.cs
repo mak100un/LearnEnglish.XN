@@ -3,6 +3,7 @@ using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using LearnEnglish.XN.Core.ViewModels.Items;
+using LearnEnglish.XN.iOS.Extensions;
 using MvvmCross.Binding.BindingContext;
 using UIKit;
 
@@ -10,6 +11,8 @@ namespace LearnEnglish.XN.iOS.Cells;
 
 public class MyMessageCell : BaseMessageCell
 {
+    private UIView _labelView;
+
     [Export("initWithFrame:")]
     public MyMessageCell(CGRect frame)
         : base(frame)
@@ -28,30 +31,35 @@ public class MyMessageCell : BaseMessageCell
             Lines = 0,
             LineBreakMode = UILineBreakMode.WordWrap
         };
-        var labelView = new UIView
+
+        _labelView = new UIView
         {
             BackgroundColor = UIColor.FromRGB(242, 243, 247),
         };
-        labelView.Add(label);
-        labelView.Layer.CornerRadius = 16;
-        labelView.Layer.MasksToBounds = true;
-        labelView.Layer.MaskedCorners = CACornerMask.MinXMinYCorner | CACornerMask.MinXMaxYCorner | CACornerMask.MaxXMaxYCorner;
+        _labelView.Add(label);
 
-        Add(labelView);
+        if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
+        {
+            _labelView.Layer.CornerRadius = 16;
+            _labelView.Layer.MaskedCorners = CACornerMask.MinXMinYCorner | CACornerMask.MinXMaxYCorner | CACornerMask.MaxXMaxYCorner;
+        }
+        _labelView.Layer.MasksToBounds = true;
+
+        Add(_labelView);
 
         NSLayoutConstraint.ActivateConstraints(new []
         {
             // label
-            label.BottomAnchor.ConstraintEqualTo(labelView.BottomAnchor, -10),
-            label.TrailingAnchor.ConstraintEqualTo(labelView.TrailingAnchor, -16),
-            label.LeadingAnchor.ConstraintEqualTo(labelView.LeadingAnchor, 16),
-            label.TopAnchor.ConstraintEqualTo(labelView.TopAnchor, 10),
+            label.BottomAnchor.ConstraintEqualTo(_labelView.BottomAnchor, -10),
+            label.TrailingAnchor.ConstraintEqualTo(_labelView.TrailingAnchor, -16),
+            label.LeadingAnchor.ConstraintEqualTo(_labelView.LeadingAnchor, 16),
+            label.TopAnchor.ConstraintEqualTo(_labelView.TopAnchor, 10),
 
             // labelView
-            labelView.LeadingAnchor.ConstraintGreaterThanOrEqualTo(LeadingAnchor, 100),
-            labelView.TrailingAnchor.ConstraintEqualTo(TrailingAnchor, -16),
-            labelView.TopAnchor.ConstraintEqualTo(TopAnchor, 8),
-            labelView.BottomAnchor.ConstraintEqualTo(BottomAnchor, -8),
+            _labelView.LeadingAnchor.ConstraintGreaterThanOrEqualTo(LeadingAnchor, 100),
+            _labelView.TrailingAnchor.ConstraintEqualTo(TrailingAnchor, -16),
+            _labelView.TopAnchor.ConstraintEqualTo(TopAnchor, 8),
+            _labelView.BottomAnchor.ConstraintEqualTo(BottomAnchor, -8),
         });
 
         this.DelayBind(() =>
@@ -66,5 +74,16 @@ public class MyMessageCell : BaseMessageCell
         });
 
         this.SubviewsDoNotTranslateAutoresizingMaskIntoConstraints();
+    }
+
+    public override void LayoutSubviews()
+    {
+        base.LayoutSubviews();
+        if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
+        {
+            return;
+        }
+
+        _labelView.AddCornerRadius(UIRectCorner.TopLeft | UIRectCorner.BottomLeft | UIRectCorner.BottomRight, 16);
     }
 }
