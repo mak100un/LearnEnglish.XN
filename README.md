@@ -23,7 +23,11 @@ https://user-images.githubusercontent.com/44783367/213669437-d0228ffa-169e-4a23-
 
 Screenshots (iOS):
 
-![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 13 31](https://user-images.githubusercontent.com/44783367/230750733-fa2bf451-c801-467e-a70c-e33c8156c537.png | width=100)
+<div style="width: 100;">
+  
+  ![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 13 31](https://user-images.githubusercontent.com/44783367/230750733-fa2bf451-c801-467e-a70c-e33c8156c537.png)
+  
+</div>
 
 ![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 14 06](https://user-images.githubusercontent.com/44783367/230750740-f0f64bba-8c9f-4af8-9015-3d28aa380b1c.png)
 
