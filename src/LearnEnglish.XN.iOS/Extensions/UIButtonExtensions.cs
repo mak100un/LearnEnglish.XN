@@ -23,8 +23,8 @@ public static class UIButtonExtensions
         button.Layer.CornerRadius = 16;
         button.Layer.MasksToBounds = false;
         button.Layer.ShadowRadius = button.Layer.CornerRadius;
-        button.Layer.ShadowOpacity = 0.4f;
-        button.Layer.ShadowOffset = new CGSize(width: 1.0, height: 1.0);
+        button.Layer.ShadowOpacity = 0.2f;
+        button.Layer.ShadowOffset = new CGSize(width: 2.0, height: 2.0);
         button.Layer.ShadowColor = UIColor.DarkGray.CGColor;
         return button;
     }

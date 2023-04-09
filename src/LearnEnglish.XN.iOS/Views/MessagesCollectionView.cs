@@ -1,4 +1,5 @@
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using CoreGraphics;
 using Foundation;
 using UIKit;
@@ -7,22 +8,36 @@ namespace LearnEnglish.XN.iOS.Views;
 
 public class MessagesCollectionView : UICollectionView
 {
-    private TaskCompletionSource<bool> _scrollTask;
+    private readonly Dictionary<NSIndexPath, CGSize> _sizeDictionary = new();
+
+    public event EventHandler<NSIndexPath> ItemSizeUpdated;
 
     public MessagesCollectionView(CGRect frame, UICollectionViewLayout layout)
         : base(frame, layout)
     {
     }
 
-    public async Task ScrollToItemAsync(NSIndexPath indexPath, UICollectionViewScrollPosition scrollPosition, bool animated)
+    public Queue<bool> ScrollRequestsQueue { get; } = new();
+
+    public override void ScrollToItem(NSIndexPath indexPath, UICollectionViewScrollPosition scrollPosition, bool animated)
     {
-        _scrollTask?.TrySetResult(true);
-        _scrollTask = new TaskCompletionSource<bool>();
-        ScrollEnabled = false;
-        ScrollToItem(indexPath, scrollPosition, animated);
-        await _scrollTask.Task;
-        ScrollEnabled = true;
+        ScrollRequestsQueue.Enqueue(true);
+        base.ScrollToItem(indexPath, scrollPosition, animated);
     }
 
-    public void ScrollAnimationEnd() => _scrollTask?.TrySetResult(true);
+    public CGSize? TryGetItemSize(NSIndexPath indexPath) => _sizeDictionary.TryGetValue(indexPath, out CGSize size) ? size : null;
+
+    public void TrySetItemSize(NSIndexPath indexPath, CGSize size)
+    {
+        var containsKey = _sizeDictionary.ContainsKey(indexPath);
+        _sizeDictionary[indexPath] = size;
+        if (containsKey)
+        {
+            return;
+        }
+
+        ItemSizeUpdated?.Invoke(this, indexPath);
+    }
+
+    public void TryClearItemSizes() => _sizeDictionary.Clear();
 }

@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using CoreGraphics;
+using Foundation;
 using LearnEnglish.XN.iOS.Views;
 using UIKit;
 
@@ -14,11 +16,11 @@ public class MessagesFlowDelegateLayout : UICollectionViewDelegateFlowLayout, IN
 
     public override void Scrolled(UIScrollView scrollView)
     {
-        if (!scrollView.ScrollEnabled
-            || scrollView.ContentSize.Height <= scrollView.Bounds.Height
-            || scrollView is not UICollectionView collectionView
+        if (scrollView.ContentSize.Height <= scrollView.Bounds.Height
+            || scrollView is not MessagesCollectionView collectionView
+            || collectionView.ScrollRequestsQueue.TryDequeue(out _)
             || collectionView.IndexPathsForVisibleItems?.Any() != true
-            || collectionView.IndexPathsForVisibleItems.OrderBy(index => index.Row).FirstOrDefault()?.Row > LoadingOffset)
+            || collectionView.IndexPathsForVisibleItems.Min(index => index.Row) > LoadingOffset)
         {
             return;
         }
@@ -26,7 +28,16 @@ public class MessagesFlowDelegateLayout : UICollectionViewDelegateFlowLayout, IN
         LoadMoreCommand?.Execute(null);
     }
 
-    public override void ScrollAnimationEnded(UIScrollView scrollView) => (scrollView as MessagesCollectionView)?.ScrollAnimationEnd();
+    public override CGSize GetSizeForItem(UICollectionView collectionView, UICollectionViewLayout layout, NSIndexPath indexPath)
+    {
+        if (collectionView is MessagesCollectionView messagesCollectionView
+            && messagesCollectionView.TryGetItemSize(indexPath) is { } size)
+        {
+            return size;
+        }
+
+        return new CGSize(1, 1);
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
 }

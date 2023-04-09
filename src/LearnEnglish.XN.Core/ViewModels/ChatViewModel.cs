@@ -220,6 +220,9 @@ public class ChatViewModel : BaseViewModel
 
             var messages = _mapper.Map<IList<MessageViewModel>>(newItems.OrderBy(m => m.Id));
             var lastMessage = messages.Last();
+
+            // Simulate dialog loading
+            await Task.Delay(500);
             Messages.InsertRange(0, messages);
 
             if (!lastMessage.IsMine && lastMessage.MessageType == MessageTypes.OperatorWithVariants)

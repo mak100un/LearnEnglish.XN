@@ -89,18 +89,27 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
                 {
                     switch (ItemCount - args.NewItems?.Count)
                     {
+                        case 0:
+                            {
+                                CollectionView.TryClearItemSizes();
+                                CollectionView.ItemSizeUpdated -= OnItemSizeUpdated;
+                                CollectionView.ItemSizeUpdated += OnItemSizeUpdated;
+                                break;
+                            }
                         case > 0 when args.NewStartingIndex == 0 && args.NewItems?.Count == 1:
                             {
-                                CollectionView.ScrollEnabled = false;
-                                Add(args);
-                                DispatchQueue.MainQueue.DispatchAsync(() => CollectionView.ScrollEnabled = true);
+                                WrapWithScrollDisabling(() => Add(args));
 
                                 return;
                             }
                         // Pagination
                         case > 0 when args.NewStartingIndex == 0:
                             {
-                                CollectionView.ScrollEnabled = false;
+                                if (CollectionView.ContentSize.Height > CollectionView.Bounds.Height)
+                                {
+                                    CollectionView.ScrollRequestsQueue.Enqueue(true);
+                                }
+
                                 var bottomOffset = CollectionView.ContentSize.Height - CollectionView.ContentOffset.Y;
 
                                 CATransaction.Begin();
@@ -113,53 +122,55 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
                                     if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height)
                                     {
                                         CATransaction.Commit();
-                                        CollectionView.ScrollEnabled = true;
                                         return;
                                     }
 
                                     CollectionView.ContentOffset = new CGPoint(0, CollectionView.ContentSize.Height - bottomOffset);
                                     CATransaction.Commit();
-                                    CollectionView.ScrollEnabled = true;
                                 });
 
                                 return;
                             }
                     }
-                    CollectionView.ScrollEnabled = false;
                     Add(args);
-                    DispatchQueue.MainQueue.DispatchAsync(() =>
-                    {
-                        if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height
-                            || !(LastVisibleItem() >= ItemCount - 3))
-                        {
-                            CollectionView.ScrollEnabled = true;
-                            return;
-                        }
-
-                        ScrollToBottomAsync();
-                    });
+                    DispatchQueue.MainQueue.DispatchAsync(ScrollToBottomAsync);
 
                     break;
                 }
             case NotifyCollectionChangedAction.Remove:
-                CollectionView.ScrollEnabled = false;
-                Remove(args);
-                DispatchQueue.MainQueue.DispatchAsync(() => CollectionView.ScrollEnabled = true);
+                WrapWithScrollDisabling(() => Remove(args));
                 break;
             case NotifyCollectionChangedAction.Replace:
-                Replace(args);
+                WrapWithScrollDisabling(() => Replace(args));
                 break;
             case NotifyCollectionChangedAction.Move:
-                Move(args);
+                WrapWithScrollDisabling(() => Move(args));
                 break;
             case NotifyCollectionChangedAction.Reset:
-                Reload();
+                WrapWithScrollDisabling(Reload);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        int? LastVisibleItem() => CollectionView?.IndexPathsForVisibleItems?.OrderBy(index => index.Row).LastOrDefault()?.Row;
+        void WrapWithScrollDisabling(Action action) => action();
+    }
+
+    private void OnItemSizeUpdated(object sender, NSIndexPath indexPath)
+    {
+        var lastItem = CollectionView.NumberOfItemsInSection(0) - 1;
+
+        if (lastItem <  0)
+        {
+            return;
+        }
+
+        if (!indexPath.Equals(NSIndexPath.FromRowSection(lastItem, 0)))
+        {
+            return;
+        }
+
+        DispatchQueue.MainQueue.DispatchAsync(ScrollToBottomAsync);
     }
 
     protected override void Dispose(bool disposing)
@@ -248,14 +259,23 @@ public class MessagesDataSource : UICollectionViewDataSource, INotifyPropertyCha
 
     private async void ScrollToBottomAsync()
     {
-        var lastItem = CollectionView.NumberOfItemsInSection(0) - 1;
-
-        if (lastItem < 0)
+        if (CollectionView.ContentSize.Height <= CollectionView.Bounds.Height
+            || CollectionView.IndexPathsForVisibleItems?.Any() != true
+            || !(LastVisibleItem() >= ItemCount - 3))
         {
-            CollectionView.ScrollEnabled = true;
             return;
         }
 
-        await CollectionView.ScrollToItemAsync(NSIndexPath.FromRowSection(lastItem, 0), UICollectionViewScrollPosition.Bottom, true);
+
+        var lastItem = CollectionView.NumberOfItemsInSection(0) - 1;
+
+        if (lastItem <  0)
+        {
+            return;
+        }
+
+        CollectionView.ScrollToItem(NSIndexPath.FromRowSection(lastItem, 0), UICollectionViewScrollPosition.Bottom, true);
+
+        int? LastVisibleItem() => CollectionView?.IndexPathsForVisibleItems?.Max(index => index.Row);
     }
 }
