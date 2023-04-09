@@ -17,5 +17,5 @@ Screenshots (iOS):
 
 Video (iOS):
 
-https://user-images.githubusercontent.com/44783367/230750590-cfba9d5c-d52f-41eb-a0de-ab446b063a3c.mp4
+https://user-images.githubusercontent.com/44783367/230774500-0caea4e0-dc47-4ae9-ba95-f2b4648e5e12.mp4
 
