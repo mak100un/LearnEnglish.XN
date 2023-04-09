@@ -154,7 +154,7 @@ public class ChatViewModel : BaseViewModel
                     LoadingOffset = 2;
 
                     // Imitate some work
-                    await Task.Delay(5000);
+                    await Task.Delay(2500);
                     var newItems = (await _messagesRepository.GetItemsAsync(Messages.Count, PAGE_SIZE))?.ToArray();
                     IsLoadMoreEnabled = newItems?.Length >= PAGE_SIZE;
 
