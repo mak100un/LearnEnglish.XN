@@ -16,9 +16,9 @@ Video (Android):
 
 https://user-images.githubusercontent.com/44783367/213669437-d0228ffa-169e-4a23-9b76-95d3f3c2c246.mp4
 
-
+Screenshots (iOS):
 
 Video (iOS):
 
-https://user-images.githubusercontent.com/44783367/230750355-f8f355a0-6305-4cd6-9d43-80ef5ae90f7e.mp4
+https://user-images.githubusercontent.com/44783367/230750590-cfba9d5c-d52f-41eb-a0de-ab446b063a3c.mp4
 
