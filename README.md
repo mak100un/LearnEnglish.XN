@@ -25,7 +25,8 @@ Screenshots (iOS):
 
 ![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 14 19](https://user-images.githubusercontent.com/44783367/230750765-03c50764-b634-4e8e-a0ad-fbb784c970f9.png)
 
-![Uploading Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05.14.42.png…]()
+
+![Simulator Screen Shot - iPhone 14 Pro Max - 2023-04-09 at 05 14 42](https://user-images.githubusercontent.com/44783367/230750783-ef19a749-a328-43af-94eb-1e0afe657d77.png)
 
 
 Video (iOS):
