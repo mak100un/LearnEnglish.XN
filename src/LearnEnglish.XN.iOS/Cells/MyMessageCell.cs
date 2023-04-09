@@ -1,4 +1,5 @@
 using Cirrious.FluentLayouts.Touch;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using LearnEnglish.XN.Core.ViewModels.Items;
@@ -34,6 +35,7 @@ public class MyMessageCell : BaseMessageCell
         labelView.Add(label);
         labelView.Layer.CornerRadius = 16;
         labelView.Layer.MasksToBounds = true;
+        labelView.Layer.MaskedCorners = CACornerMask.MinXMinYCorner | CACornerMask.MinXMaxYCorner | CACornerMask.MaxXMaxYCorner;
 
         Add(labelView);
 

@@ -2,7 +2,7 @@ using UIKit;
 
 namespace LearnEnglish.XN.iOS.Extensions;
 
-public static class ViewControllerExtensions
+public static class UIViewControllerExtensions
 {
     public static UIViewController GetPresentedViewController(this UIViewController viewController) =>
         viewController switch
